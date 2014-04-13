@@ -70,4 +70,4 @@ layers {
 }
 ```
 
-The complete and authoritative details on encoding are part of the code comments for the [vector tile protobuf schema document](/vector_tile.proto).
+The complete and authoritative details on encoding are part of the code comments for the [vector tile protobuf schema document](https://github.com/mapbox/vector-tile-spec/blob/master/1.0.0/vector_tile.proto).
