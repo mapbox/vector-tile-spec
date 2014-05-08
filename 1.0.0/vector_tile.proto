@@ -47,18 +47,23 @@ message tile {
                 // - LineTo:    2   (2 parameters follow)
                 // - ClosePath: 7   (no parameters follow)
                 //
+                // Commands are encoded as uint32 varints. Vertex parameters
+                // are encoded as deltas to the previous position and, as they
+                // may be negative, are further "zigzag" encoded as unsigned
+                // 32-bit ints:
+                //
+                //   n = (n << 1) ^ (n >> 31)
+                //
                 // Ex.: MoveTo(3, 6), LineTo(8, 12), LineTo(20, 34), ClosePath
-                // Encoded as: [ 9 3 6 18 5 6 12 22 15 ]
+                // Encoded as: [ 9 6 12 18 10 12 24 44 15 ]
                 //                                  == command type 7 (ClosePath), length 1
                 //                             ===== relative LineTo(+12, +22) == LineTo(20, 34)
                 //                         === relative LineTo(+5, +6) == LineTo(8, 12)
                 //                      == [00010 010] = command type 2 (LineTo), length 2
                 //                  === relative MoveTo(+3, +6)
                 //              == [00001 001] = command type 1 (MoveTo), length 1
-                // Commands are encoded as uint32 varints, vertex parameters are
-                // encoded as sint32 varints (zigzag). Vertex parameters are
-                // also encoded as deltas to the previous position. The original
-                // position is (0,0)
+                //
+                // The original position is (0,0).
                 repeated uint32 geometry = 4 [ packed = true ];
         }
 
