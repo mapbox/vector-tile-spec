@@ -4,16 +4,16 @@ package mapnik.vector;
 
 option optimize_for = LITE_RUNTIME;
 
-message tile {
+message Tile {
         enum GeomType {
-             Unknown = 0;
-             Point = 1;
-             LineString = 2;
-             Polygon = 3;
+             UNKNOWN = 0;
+             POINT = 1;
+             LINESTRING = 2;
+             POLYGON = 3;
         }
 
         // Variant type encoding
-        message value {
+        message Value {
                 // Exactly one of these values may be present in a valid message
                 optional string string_value = 1;
                 optional float float_value = 2;
@@ -26,8 +26,8 @@ message tile {
                 extensions 8 to max;
         }
 
-        message feature {
-                optional uint64 id = 1;
+        message Feature {
+                optional uint64 id = 1 [ default = 0 ];
 
                 // Tags of this feature. Even numbered values refer to the nth
                 // value in the keys list on the tile message, odd numbered
@@ -36,7 +36,7 @@ message tile {
                 repeated uint32 tags = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
-                optional GeomType type = 3 [ default = Unknown ];
+                optional GeomType type = 3 [ default = UNKNOWN ];
 
                 // Contains a stream of commands and parameters (vertices). The
                 // repeat count is shifted to the left by 3 bits. This means
@@ -67,7 +67,7 @@ message tile {
                 repeated uint32 geometry = 4 [ packed = true ];
         }
 
-        message layer {
+        message Layer {
                 // Any compliant implementation must first read the version
                 // number encoded in this message and choose the correct
                 // implementation for this version number before proceeding to
@@ -77,13 +77,13 @@ message tile {
                 required string name = 1;
 
                 // The actual features in this tile.
-                repeated feature features = 2;
+                repeated Feature features = 2;
 
                 // Dictionary encoding for keys
                 repeated string keys = 3;
 
                 // Dictionary encoding for values
-                repeated value values = 4;
+                repeated Value values = 4;
 
                 // The bounding box in this tile spans from 0..4095 units
                 optional uint32 extent = 5 [ default = 4096 ];
@@ -91,7 +91,7 @@ message tile {
                 extensions 16 to max;
         }
 
-        repeated layer layers = 3;
+        repeated Layer layers = 3;
 
         extensions 16 to 8191;
 }
