@@ -1,6 +1,6 @@
 // Protocol Version 1
 
-package mapnik.vector;
+package vector_tile;
 
 option optimize_for = LITE_RUNTIME;
 
