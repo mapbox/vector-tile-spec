@@ -56,12 +56,12 @@ message tile {
                 //
                 // Ex.: MoveTo(3, 6), LineTo(8, 12), LineTo(20, 34), ClosePath
                 // Encoded as: [ 9 6 12 18 10 12 24 44 15 ]
-                //                                  == command type 7 (ClosePath), length 1
-                //                             ===== relative LineTo(+12, +22) == LineTo(20, 34)
-                //                         === relative LineTo(+5, +6) == LineTo(8, 12)
-                //                      == [00010 010] = command type 2 (LineTo), length 2
-                //                  === relative MoveTo(+3, +6)
-                //              == [00001 001] = command type 1 (MoveTo), length 1
+                //               |       |              `> [00001 111] command type 7 (ClosePath), length 1
+                //               |       |       ===== relative LineTo(+12, +22) == LineTo(20, 34)
+                //               |       | ===== relative LineTo(+5, +6) == LineTo(8, 12)
+                //               |       `> [00010 010] = command type 2 (LineTo), length 2
+                //               | ==== relative MoveTo(+3, +6)
+                //               `> [00001 001] = command type 1 (MoveTo), length 1
                 //
                 // The original position is (0,0).
                 repeated uint32 geometry = 4 [ packed = true ];
