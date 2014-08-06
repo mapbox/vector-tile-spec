@@ -29,10 +29,13 @@ message Tile {
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
 
-                // Tags of this feature. Even numbered values refer to the nth
-                // value in the keys list on the tile message, odd numbered
-                // values refer to the nth value in the values list on the tile
-                // message.
+                // Tags of this feature are encoded as repeated pairs of
+                // integers. Even indexed values (n, beginning with 0) are
+                // themselves indexes into the layer's keys list. Odd indexed
+                // values (n+1) are indexes into the layer's values list.
+                // The first (n=0) tag of a feature, therefore, has a key of
+                // layer.keys[feature.tags[0]] and a value of 
+                // layer.values[feature.tags[1]].
                 repeated uint32 tags = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
