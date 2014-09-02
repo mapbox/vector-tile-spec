@@ -1,4 +1,4 @@
-## Vector Tile Specification
+## Mapbox Vector Tile Specification
 
 A specification for encoding tiled vector data.
 
