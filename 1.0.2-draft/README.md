@@ -22,7 +22,7 @@ Features contain an id, attributes, geometries (either point, linestring, or pol
 
 ### 3.1. Geometry Encoding
 
-Geometries are stored as an a single array of integers that represent an command,x,y stream (where command is a rendering command like `move_to` or `line_to`). Commands are encoded only when they change.
+Geometries are stored as an a single array of integers that represent a command,x,y stream (where command is a rendering command like `move_to` or `line_to`). Commands are encoded only when they change.
 
 Geometries with multiple parts (multipoint, multiline, or multipolygon) should be encoded one after another in the same `geometry` field and therefore are "flattened". Geometries with only a single part will have only a single `move_to` present. For multipoints and multilines a repeated `move_to` will indicate another part of a multipart geometry. For polygons a repeated `move_to` will indicate either another exterior of a new polygon part or an interior ring of the previous polygon part. The winding order should be used to distinguish between the two types: polygon interior rings (holes) must be oriented with the opposite winding order than their parent exterior rings and all interior rings must directly follow the exterior ring they belong to. 
 
