@@ -16,7 +16,9 @@ Vector Tiles use [Google Protocol buffers](https://developers.google.com/protoco
 
 ## 3. Internal structure
 
-A vector tile may consist of one or more named layers and containing one or more features.
+A vector tile SHOULD consist of one or more named layers. 
+
+A layer MUST contain a field describing its name and a version of the vector tile spec from which it was created. A layer  MUST also contain one or more features. A layer MAY contain one or more sets of feature attributes.
 
 Features MAY contain an `id` and `tags` (attributes) and MUST contain either a `geometry` (either point, linestring, or polygon) or a `raster` field. A feature SHALL NOT contain both a `raster` and a `geometry` field. If a feature has a `geometry` field it MUST also have a `type` field to describe the `geometry`. 
 
