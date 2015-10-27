@@ -32,6 +32,8 @@ Geometry collections are not supported.
 
 Geometries SHOULD be clipped, reprojected into spherical mercator, converted to screen coordinates, and MUST be [delta](http://en.wikipedia.org/wiki/Delta_encoding) and [zigzag](https://developers.google.com/protocol-buffers/docs/encoding#types) encoded.
 
+Geometries SHOULD be a geometric objects that has no anomalous geometric points, such as self intersection or self tangency.
+
 ### 3.2. Feature Attributes
 
 Feature attributes are encoded as key:value pairs which are dictionary encoded at the layer level for compact storage of any repeated keys or values. Values use [variant](https://developers.google.com/protocol-buffers/docs/encoding#varints) type encoding supporting both unicode strings, boolean values, and various integer and floating point types.
