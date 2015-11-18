@@ -176,7 +176,7 @@ The `ClosePath` command requires no parameters. The command creates a line segme
 
 This command does not change the cursor position.
 
-A `ClosePath` command MUST have a command count of 1. Each `ClosePath` command MUST be preceded by at least one `MoveTo` command.
+A `ClosePath` command MUST have a command count of 1.
 
 #### 4.3.4. Geometry Types
 
