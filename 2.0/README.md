@@ -40,7 +40,7 @@ A Vector Tile SHOULD contain at least one layer. A layer SHOULD contain at least
 
 A layer MUST contain a `version` field with the major version number of the Vector Tile specification to which the layer adheres. For example, a layer adhering to version 2.1 of the specification contains a `version` field with the integer value `2`. The `version` field MUST be the first field within the layer. Decoders SHOULD parse the `version` first to ensure that they are capable of decoding each layer. When a Vector Tile consumer encounters a Vector Tile layer with an unknown version, it MAY make a best-effort attempt to interpret the layer, or it MAY skip the layer. In either case it SHOULD continue to process subsequent layers in the Vector Tile.
 
-A layer MUST contain a `name` field. A Vector Tile MUST NOT contain two or more layers with identical `name` values. Prior to appending a layer to an existing Vector Tile, an encoder MUST check the existing `name` fields in order to prevent duplication.
+A layer MUST contain a `name` field. A Vector Tile MUST NOT contain two or more layers whose `name` values are byte-for-byte identical. Prior to appending a layer to an existing Vector Tile, an encoder MUST check the existing `name` fields in order to prevent duplication.
 
 Each feature in a layer (see below) may have one or more key-value pairs as its metadata. The keys and values are indices into two lists, `keys` and `values`, that are shared across the layer's features.
 
