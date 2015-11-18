@@ -20,9 +20,9 @@ A vector tile can consist of one or more named layers and containing one or more
 
 Features contain an id, attributes, and geometries: either point, linestring, or polygon.
 
-Geometries are stored as an a single array of integers that represent an command,x,y stream (where command is a rendering command like move_to or line_to). Commands are encoded only when they change. Geometries are clipped, reprojected into spherical mercator, converted to screen coordinates, and [delta](http://en.wikipedia.org/wiki/Delta_encoding) and [zigzag](https://developers.google.com/protocol-buffers/docs/encoding#types) encoded.
+Geometries are stored as a single array of integers that represent a command,x,y stream (where command is a rendering command like move_to or line_to). Commands are encoded only when they change. Geometries are clipped, reprojected into spherical mercator, converted to screen coordinates, and [delta](http://en.wikipedia.org/wiki/Delta_encoding) and [zigzag](https://developers.google.com/protocol-buffers/docs/encoding#types) encoded.
 
-Feature attributes are encoded as key:value pairs which are dictionary encoded at the layer level for compact storage of any repeated keys or values. Values use [variant](https://developers.google.com/protocol-buffers/docs/encoding#varints) type encoding supporting both unicode strings, boolean values, and various integer and floating point types.
+Feature attributes are encoded as key:value pairs which are dictionary encoded at the layer level for compact storage of any repeated keys or values. Values use [varint](https://developers.google.com/protocol-buffers/docs/encoding#varints) type encoding supporting both unicode strings, boolean values, and various integer and floating point types.
 
 For example, a GeoJSON feature like:
 
