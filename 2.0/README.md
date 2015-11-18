@@ -98,10 +98,6 @@ A command ID specifies one of the following commands:
 | LineTo       | `2`  | `dX`, `dY`    | 2               |
 | ClosePath    | `7`  | No parameters | 0               |
 
-The command count for MoveTo and LineTo commands MUST be the number of points (pairs of `ParameterIntegers`) that follow it. The command count for ClosePath MUST be 1, even though it does not take parameters.
-
-A command count MUST be greater than zero, so a MoveTo or LineTo with no coordinate pairs MUST NOT be produced.
-
 ##### Example Command Integers
 
 | Command   |  ID  | Count | CommandInteger | Binary Representation `[Count][Id]`      |
@@ -153,9 +149,12 @@ pY = cY + dY
 
 After this command the cursor is at `(pX,pY)`.
 
+The command count for a `MoveTo` command MUST be the number of pairs of `ParameterIntegers` that follow it, and MUST be greater than zero.
+
 #### 4.3.3.2. LineTo Command
 
-The `LineTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value.  The command creates a line segment that begins at the point `(cX,cY)` and ends at the point `(pX,pY)` where:
+The `LineTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value. `dX` and `dY` SHOULD NOT both have a value of 0.
+ The command creates a line segment that begins at the point `(cX,cY)` and ends at the point `(pX,pY)` where:
 
 ```
 pX = cX + dX
@@ -169,7 +168,7 @@ pY = cY + dY
 
 After this command the cursor is at `(pX,pY)`.
 
-The `LineTo` command SHOULD NOT be used with the `dX` and `dY` value both equal to 0.
+The command count for a `LineTo` command MUST be the number of pairs of `ParameterIntegers` that follow it, and MUST be greater than zero.
 
 #### 4.3.3.3. ClosePath Command
 
@@ -177,7 +176,7 @@ The `ClosePath` command requires no parameters. The command creates a line segme
 
 This command does not change the cursor position.
 
-The `ClosePath` command MUST have a command count equal to one. Each `ClosePath` command MUST be preceded by at least one `MoveTo` command.
+A `ClosePath` command MUST have a command count of 1. Each `ClosePath` command MUST be preceded by at least one `MoveTo` command.
 
 #### 4.3.4. Geometry Types
 
