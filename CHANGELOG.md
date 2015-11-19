@@ -6,7 +6,7 @@ The focus of version `2.0` of the Mapbox Vector Tile specification is the clarif
 
 The version numbering of the specification is now more clearly defined as well as part of the `2.0` changes, migrating from a `major.minor.patch` versioning to a `major.minor` versioning. 
 
-Sections to the specification have introduced to improve readablility. There are now more examples of the geometry encoding process to ease understanding of the concepts within the specification. 
+Sections to the specification have been introduced to improve readablility. There are now more examples of the geometry encoding process to ease understanding of the concepts within the specification.
 
 The file [CONTRIBUTING.md] has been added to the repository to better define a repeatable process for changing the specification.
 
@@ -15,7 +15,7 @@ The file [CONTRIBUTING.md] has been added to the repository to better define a r
  - Clarification of how polygon exterior and interior rings should be oriented and ordered: If present, any polygon interior rings (holes) must be oriented with the opposite winding order than their parent exterior rings and all interior rings must directly follow the exterior ring they belong too. Exterior rings must be oriented CW and interior rings must be oriented CCW (when viewed in screen coordinates).
  - Added optional `raster` field on feature intended to store encoded image data representing exact and unbuffered tile extents for a layer. This is an experimental field in this version.
  - Noted that first point does not have to be the same as last point prior to calling `ClosePath`.
- - Polygon geometries now must be not have self intersections or self tangency. (Example: spikes in rings)
+ - Polygon geometries now must not have self intersections or self tangency. (Example: spikes in rings)
  - Addded definition of linear ring.
  - Clarified that `UNKNOWN` geometry types may be ignored and that it is experimental.
  - Required the use of the `version` field in layers.
@@ -26,7 +26,7 @@ The file [CONTRIBUTING.md] has been added to the repository to better define a r
  - Explained the different commands used in encoding.
  - Added the concept of the `cursor` when encoding and decoding a vector tile.
  - Explained the coordinate system of a vector tile.
- - Made it clear that specification could be used in projections other then Mercator.
+ - Made it clear that specification could be used in projections other than Mercator.
  - Defined more clearly feature attributes and how they are handled.
  - `LineTo` command should not resolve to same position - ex: `LineTo(0,0)`.
  - Changed the way that versioning of the specification is handled. 
