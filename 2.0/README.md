@@ -78,15 +78,15 @@ A command ID is encoded as an unsigned integer in the least significant 3 bits o
 
 A command ID, a command count, and a `CommandInteger` are related by these bitwise operations:
 
-```
+```javascript
 CommandInteger = (id & 0x7) | (count << 3)
 ```
 
-```
+```javascript
 id = CommandInteger & 0x7
 ```
 
-```
+```javascript
 count = CommandInteger >> 3
 ```
 
@@ -115,7 +115,7 @@ Commands requiring parameters are followed by a `ParameterInteger` for each para
 
 A `ParameterInteger` is [zigzag](https://developers.google.com/protocol-buffers/docs/encoding#types) encoded so that small negative and positive values are both encoded as small integers. To encode a parameter value to a `ParameterInteger` the following formula is used:
 
-```
+```javascript
 ParameterInteger = (value << 1) ^ (value >> 31)
 ```
 
@@ -123,7 +123,7 @@ Parameter values greater than `pow(2,31) - 1` or less than `-1 * (pow(2,31) - 1)
 
 The following formula is used to decode a `ParameterInteger` to a value:
 
-```
+```javascript
 value = ((ParameterInteger >> 1) ^ (-(ParameterInteger & 1)))
 ```
 
@@ -137,13 +137,13 @@ For all descriptions of commands the initial position of the cursor shall be des
 
 The `MoveTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value. The command moves the cursor to position `pX` and `pY` where:
 
-```
+```javascript
 pX = cX + dX
 ```
 
 and
 
-```
+```javascript
 pY = cY + dY
 ```
 
@@ -156,13 +156,13 @@ The command count for a `MoveTo` command MUST be the number of pairs of `Paramet
 The `LineTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value. `dX` and `dY` SHOULD NOT both have a value of 0.
  The command creates a line segment that begins at the point `(cX,cY)` and ends at the point `(pX,pY)` where:
 
-```
+```javascript
 pX = cX + dX
 ```
 
 and
 
-```
+```javascript
 pY = cY + dY
 ```
 
