@@ -231,6 +231,8 @@ If the command sequence for a `POLYGON` geometry type includes only a single ext
 
 Linear rings MUST be geometric objects that have no anomalous geometric points, such as self-intersection or self-tangency. The position of the cursor before calling the `ClosePath` command of a linear ring SHALL NOT repeat the same position as the first point in the linear ring as this would create a zero-length line segment. A linear ring SHOULD NOT have an area calculated by the surveyor's formula equal to zero, as this would signify a ring with anomalous geometric points.
 
+Polygon geometries MUST NOT have any interior rings that intersect and interior rings MUST be enclosed by the exterior ring.
+
 #### 4.3.5. Example Geometry Encodings
 
 ##### 4.3.5.1. Example Point
