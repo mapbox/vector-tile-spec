@@ -215,7 +215,7 @@ If the command sequence for a `LINESTRING` geometry type includes only a single 
 
 ##### 4.3.4.4. Polygon Geometry Type
 
-The `POLYGON` geometry type encodes a polygon or multipolygon geometry, each polygon consisting of an exterior ring containing zero or more interior rings. The geometry command sequence for a polygon consists of one or more repetitions of an `ExteriorRing` followed by zero or more `InteriorRing`s. Both `ExteriorRing`s and `InteriorRing`s MUST consist of one or more repetitions of a `MoveTo` command, followed by two or more `LineTo` commands, followed by exactly one `ClosePath` command:
+The `POLYGON` geometry type encodes a polygon or multipolygon geometry, each polygon consisting of exactly one exterior ring that contains zero or more interior rings. The geometry command sequence for a polygon consists of one or more repetitions of an `ExteriorRing` followed by zero or more `InteriorRing`s. Both `ExteriorRing`s and `InteriorRing`s MUST consist of one or more repetitions of a `MoveTo` command, followed by two or more `LineTo` commands, followed by exactly one `ClosePath` command:
 
 ```
 PolygonGeometry = (ExteriorRing InteriorRing*)+
