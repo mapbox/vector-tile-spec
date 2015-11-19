@@ -383,7 +383,7 @@ Currently the use of `raster` within features is considered **experimental**. En
 
 ### 4.5. Feature Attributes
 
-Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than the number of elements in the layer's `keys` or `values` set, respectively.
+Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
 
 ### 4.6. Example
 
