@@ -46,7 +46,7 @@ Each feature in a layer (see below) may have one or more key-value pairs as its 
 
 Each element in the `keys` field of the layer is a string. The `keys` include all the keys of features used in the layer, and each key may be referenced by its positional index in this set of `keys`, with the first key having an index of 0. The set of `keys` SHOULD NOT contain two or more values which are byte-for-byte identical.
 
-Each element in the `values` field of the layer encodes a value of any of several types (see below). The `values` represent all the values of features used in the layer, and each value may be referenced by its positional index in this set of `values`, with the first value having an index of 0. The set of `values` SHOULD NOT contain two or more values which are byte-for-byte identical.
+Each element in the `values` field of the layer encodes a value of any of several types (see below). The `values` represent all the values of features used in the layer, and each value may be referenced by its positional index in this set of `values`, with the first value having an index of 0. The set of `values` SHOULD NOT contain two or more values of the same type which are byte-for-byte identical.
 
 In order to support values of varying string, boolean, integer, and floating point types, the protobuf encoding of the `value` field consists of a set of `optional` fields. A value MUST contain exactly one of these optional fields.
 
