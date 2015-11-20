@@ -56,7 +56,9 @@ For example, if a tile has an `extent` of 4096, values between 0 and 4095 are co
 
 ### 4.2. Features
 
-A feature MUST contain either a `geometry` field or a `raster` field, but MUST NOT contain both. If a feature has a `geometry` field, it MUST also have a `type` field as described in the Geometry Types section.
+A feature MUST contain a `geometry` field.
+
+A feature MUST contain a `type` field as described in the Geometry Types section.
 
 A feature MAY contain a `tags` field. Feature-level metadata, if any, SHOULD be stored in the `tags` field.
 
@@ -377,15 +379,11 @@ This polygon would be encoded with the following set of commands:
 * LineTo(+0,-4) // Cursor at 17,13
 * ClosePath // This is an interior ring because area is negative!
 
-### 4.4. Raster Encoding
-
-Currently the use of `raster` within features is considered **experimental**. Encoders MAY support this field, but are not required to do so at this time. In future releases of this specification a more detailed set of requirements for `raster` support may be defined. It is likely in the future that a format or set of formats for images or rasters will be specified as supported for this field.
-
-### 4.5. Feature Attributes
+### 4.4. Feature Attributes
 
 Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
 
-### 4.6. Example
+### 4.5. Example
 
 For example, a GeoJSON feature like:
 
