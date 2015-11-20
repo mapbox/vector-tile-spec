@@ -18,7 +18,7 @@ The filename extension for Vector Tile files SHOULD be `mvt`. For example, a fil
 
 ## 2.2. Multipurpose Internet Mail Extensions (MIME)
 
-When serving Vector Tiles the MIME type SHOULD be `application/vnd.mvt`.
+When serving Vector Tiles the MIME type SHOULD be `application/vnd.mapbox-vector-tile`.
 
 ## 3. Projection and Bounds
 
