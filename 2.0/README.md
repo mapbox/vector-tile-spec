@@ -127,56 +127,34 @@ The following formula is used to decode a `ParameterInteger` to a value:
 value = ((ParameterInteger >> 1) ^ (-(ParameterInteger & 1)))
 ```
 
-#### 4.3.3. Commands Types
+#### 4.3.3. Command Types
 
-Commands SHOULD NOT be repeated if an increased command count would suffice to produce the same result.
-
-For all descriptions of commands the initial position of the cursor shall be described to be at the point `(cX,cY)` where `cX` is the position of the cursor on the X axis and `cY` is the position of the `cursor` on the Y axis.
+For all descriptions of commands the initial position of the cursor shall be described to be at the coordinates `(cX, cY)` where `cX` is the position of the cursor on the X axis and `cY` is the position of the `cursor` on the Y axis.
 
 ##### 4.3.3.1. MoveTo Command
 
-The `MoveTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value. The command moves the cursor to position `pX` and `pY` where:
+A `MoveTo` command with a command count of `n` MUST be immediately followed by `n` pairs of `ParameterInteger`s. Each pair `(dX, dY)`:
 
-```javascript
-pX = cX + dX
-```
-
-and
-
-```javascript
-pY = cY + dY
-```
-
-After this command the cursor is at `(pX,pY)`.
-
-The command count for a `MoveTo` command MUST be the number of pairs of `ParameterIntegers` that follow it, and MUST be greater than zero.
+1. Defines the coordinate `(pX, pY)`, where `pX = cX + dX` and `pY = cY + dY`.
+   * Within POINT geometries, this coordinate defines a new point.
+   * Within LINESTRING geometries, this coordinate defines the starting vertex of a new line.
+   * Within POLYGON geometries, this coordinate defines the starting vertex of a new linear ring.
+2. Moves the cursor to `(pX, pY)`.
 
 #### 4.3.3.2. LineTo Command
 
-The `LineTo` command requires two `ParameterIntegers` per command, the first being the `dX` value and the second being the `dY` value. `dX` and `dY` SHOULD NOT both have a value of 0.
- The command creates a line segment that begins at the point `(cX,cY)` and ends at the point `(pX,pY)` where:
+A `LineTo` command with a command count of `n` MUST be immediately followed by `n` pairs of `ParameterInteger`s. Each pair `(dX, dY)`:
 
-```javascript
-pX = cX + dX
-```
-
-and
-
-```javascript
-pY = cY + dY
-```
-
-After this command the cursor is at `(pX,pY)`.
-
-The command count for a `LineTo` command MUST be the number of pairs of `ParameterIntegers` that follow it, and MUST be greater than zero.
+1. Defines a segment beginning at the cursor `(cX, cY)` and ending at the coordinate `(pX, pY)`, where `pX = cX + dX` and `pY = cY + dY`.
+   * Within LINESTRING geometries, this segment extends the current line.
+   * Within POLYGON geometries, this segment extends the current linear ring.
+2. Moves the cursor to `(pX, pY)`.
 
 #### 4.3.3.3. ClosePath Command
 
-The `ClosePath` command requires no parameters. The command creates a line segment that begins at the point `(cX,cY)` and ends at the point `(pX,pY)`, where `pX` and `pY` are the absolute coordinates resulting from the most recent MoveTo command.
+A `ClosePath` command MUST have a command count of 1 and no parameters. The command closes the current linear ring of a POLYGON geometry via a line segment beginning at the cursor `(cX, cY)` and ending at the starting vertex of the current linear ring.
 
 This command does not change the cursor position.
-
-A `ClosePath` command MUST have a command count of 1.
 
 #### 4.3.4. Geometry Types
 
@@ -195,33 +173,31 @@ The specification purposefully leaves an unknown geometry type as an option. Thi
 
 ##### 4.3.4.2. Point Geometry Type
 
-The `POINT` geometry type encodes a point or multipoint geometry. The geometry command sequence for a point geometry MUST consist of one or more `MoveTo` commands:
+The `POINT` geometry type encodes a point or multipoint geometry. The geometry command sequence for a point geometry MUST consist of a single `MoveTo` command with a command count greater than 0.
 
-```
-PointGeometry = MoveTo+
-```
-
-If the command sequence for a `POINT` geometry type includes only a single `MoveTo` command, then the geometry MUST be interpreted as a single point; otherwise the geometry MUST be interpreted as a multipoint geometry, wherein each `MoveTo` signals a single point.
+If the `MoveTo` command for a `POINT` geometry has a command count of 1, then the geometry MUST be interpreted as a single point; otherwise the geometry MUST be interpreted as a multipoint geometry, wherein each pair of `ParameterInteger`s encodes a single point.
 
 ##### 4.3.4.3. Linestring Geometry Type
 
-The `LINESTRING` geometry type encodes a linestring or multilinestring geometry. The geometry command sequence for a linestring geometry MUST consist of one or more repetitions of a `MoveTo` command followed by one or more `LineTo` commands:
+The `LINESTRING` geometry type encodes a linestring or multilinestring geometry. The geometry command sequence for a linestring geometry MUST consist of one or more repetitions of the following sequence: 
 
-```
-LinestringGeometry = (MoveTo LineTo+)+
-```
+1. A `MoveTo` command with a command count of 1
+2. A `LineTo` command with a command count greater than 0
 
 If the command sequence for a `LINESTRING` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single linestring; otherwise the geometry MUST be interpreted as a multilinestring geometry, wherein each `MoveTo` signals the beginning of a new linestring.
 
 ##### 4.3.4.4. Polygon Geometry Type
 
-The `POLYGON` geometry type encodes a polygon or multipolygon geometry, each polygon consisting of exactly one exterior ring that contains zero or more interior rings. The geometry command sequence for a polygon consists of one or more repetitions of an `ExteriorRing` followed by zero or more `InteriorRing`s. Both `ExteriorRing`s and `InteriorRing`s MUST consist of one or more repetitions of a `MoveTo` command, followed by two or more `LineTo` commands, followed by exactly one `ClosePath` command:
+The `POLYGON` geometry type encodes a polygon or multipolygon geometry, each polygon consisting of exactly one exterior ring that contains zero or more interior rings. The geometry command sequence for a polygon consists of one or more repetitions of the following sequence:
 
-```
-PolygonGeometry = (ExteriorRing InteriorRing*)+
-ExteriorRing = MoveTo LineTo LineTo+ ClosePath
-InteriorRing = MoveTo LineTo LineTo+ ClosePath
-```
+1. An `ExteriorRing`
+2. Zero or more `InteriorRing`s
+
+Each `ExteriorRing` and `InteriorRing` MUST consist of the following sequence:
+
+1. A `MoveTo` command with a command count of 1
+2. A `LineTo` command with a command count greater than 1
+3. A `ClosePath` command
 
 An exterior ring is DEFINED as a linear ring having a positive area as calculated by applying the [surveyor's formula](https://en.wikipedia.org/wiki/Shoelace_formula) to the vertices of the polygon in tile coordinates. In the tile coordinate system (with the Y axis positive down and X axis positive to the right) this makes the exterior ring's winding order appear clockwise.
 
@@ -407,7 +383,7 @@ Currently the use of `raster` within features is considered **experimental**. En
 
 ### 4.5. Feature Attributes
 
-Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than the number of elements in the layer's `keys` or `values` set, respectively.
+Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
 
 ### 4.6. Example
 
