@@ -1,4 +1,4 @@
-n# Vector Tile Spec Changelog
+# Vector Tile Spec Changelog
 
 ### 2.0
 
