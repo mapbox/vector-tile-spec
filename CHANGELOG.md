@@ -36,18 +36,22 @@ The file [CONTRIBUTING.md] has been added to the repository to better define a r
 
  List of issues addressed by this version:
 
+ - [#43](https://github.com/mapbox/vector-tile-spec/issues/43) 
+ - [#41](https://github.com/mapbox/vector-tile-spec/issues/41) 
  - [#30](https://github.com/mapbox/vector-tile-spec/issues/30) 
  - [#29](https://github.com/mapbox/vector-tile-spec/issues/29) 
+ - [#27](https://github.com/mapbox/vector-tile-spec/issues/27) 
  - [#25](https://github.com/mapbox/vector-tile-spec/issues/25) 
  - [#24](https://github.com/mapbox/vector-tile-spec/issues/24) 
  - [#18](https://github.com/mapbox/vector-tile-spec/issues/18) 
+ - [#16](https://github.com/mapbox/vector-tile-spec/issues/16) 
  - [#15](https://github.com/mapbox/vector-tile-spec/issues/15) 
  - [#7](https://github.com/mapbox/vector-tile-spec/issues/7) 
  - [#5](https://github.com/mapbox/vector-tile-spec/issues/5) 
 
 #### Date of Release:
 
-November ##, 2015
+December 4th, 2015
 
 ### 1.0.1
 
