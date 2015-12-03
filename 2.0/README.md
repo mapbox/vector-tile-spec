@@ -152,6 +152,8 @@ A `LineTo` command with a command count of `n` MUST be immediately followed by `
    * Within POLYGON geometries, this segment extends the current linear ring.
 2. Moves the cursor to `(pX, pY)`.
 
+For any pair of `(dX, dY)` the `dX` and `dY` SHOULD NOT both be `0`.
+
 #### 4.3.3.3. ClosePath Command
 
 A `ClosePath` command MUST have a command count of 1 and no parameters. The command closes the current linear ring of a POLYGON geometry via a line segment beginning at the cursor `(cX, cY)` and ending at the starting vertex of the current linear ring.
