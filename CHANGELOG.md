@@ -1,4 +1,57 @@
-## Vector Tile Spec Changelog
+# Vector Tile Spec Changelog
+
+### 2.0
+
+The focus of version `2.0` of the Mapbox Vector Tile specification is the clarification of the intent of the intial version of the specification and the definition of interior and exterior rings within polygons. The fields within the protobuffer are more clearly defined in this version of the specification and the steps for decoders and encoders are more explicity declared. 
+
+The version numbering of the specification is now more clearly defined as well as part of the `2.0` changes, migrating from a `major.minor.patch` versioning to a `major.minor` versioning. 
+
+Sections to the specification have been introduced to improve readablility. There are now more examples of the geometry encoding process to ease understanding of the concepts within the specification.
+
+The file [CONTRIBUTING.md] has been added to the repository to better define a repeatable process for changing the specification.
+
+#### Summary of Changes:
+
+ - Clarification of how polygon exterior and interior rings should be oriented and ordered: If present, any polygon interior rings (holes) must be oriented with the opposite winding order than their parent exterior rings and all interior rings must directly follow the exterior ring they belong too. Exterior rings must be oriented CW and interior rings must be oriented CCW (when viewed in screen coordinates).
+ - Noted that first point does not have to be the same as last point prior to calling `ClosePath`.
+ - Polygon geometries now must not have self intersections or self tangency. (Example: spikes in rings)
+ - Addded definition of linear ring.
+ - Clarified that `UNKNOWN` geometry types may be ignored and that it is experimental.
+ - Required the use of the `version` field in layers.
+ - Required that layers of a tile not have the same `name` field as any other layer.
+ - Explained differences between geometry types.
+ - Added explanation of how to handle multipoint, multilines, and multipolygons geometries.
+ - Migrated the encoding logic from `proto` file to the README, adding many clarifications.
+ - Explained the different commands used in encoding.
+ - Added the concept of the `cursor` when encoding and decoding a vector tile.
+ - Explained the coordinate system of a vector tile.
+ - Made it clear that specification could be used in projections other than Mercator.
+ - Defined more clearly feature attributes and how they are handled.
+ - `LineTo` command should not resolve to same position - ex: `LineTo(0,0)`.
+ - Changed the way that versioning of the specification is handled. 
+ - Updated Authors
+ - Added `CONTRIBUTING.md` file
+
+#### Issues:
+
+ List of issues addressed by this version:
+
+ - [#43](https://github.com/mapbox/vector-tile-spec/issues/43) 
+ - [#41](https://github.com/mapbox/vector-tile-spec/issues/41) 
+ - [#30](https://github.com/mapbox/vector-tile-spec/issues/30) 
+ - [#29](https://github.com/mapbox/vector-tile-spec/issues/29) 
+ - [#27](https://github.com/mapbox/vector-tile-spec/issues/27) 
+ - [#25](https://github.com/mapbox/vector-tile-spec/issues/25) 
+ - [#24](https://github.com/mapbox/vector-tile-spec/issues/24) 
+ - [#18](https://github.com/mapbox/vector-tile-spec/issues/18) 
+ - [#16](https://github.com/mapbox/vector-tile-spec/issues/16) 
+ - [#15](https://github.com/mapbox/vector-tile-spec/issues/15) 
+ - [#7](https://github.com/mapbox/vector-tile-spec/issues/7) 
+ - [#5](https://github.com/mapbox/vector-tile-spec/issues/5) 
+
+#### Date of Release:
+
+December 4th, 2015
 
 ### 1.0.1
 
