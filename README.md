@@ -20,10 +20,11 @@ The `major` version in the specification name is synonymous with the `version` f
 
 ## Contributing
 
-If you are interested in contributing please refer to the [CONTRIBUTING.md] file.
+If you are interested in contributing please refer to the [CONTRIBUTING.md]() file.
 
 ## Authors
 
+* Vladimir Agafonkin
 * John Firebaugh
 * Eric Fischer
 * Konstantin Käfer
