@@ -8,7 +8,6 @@ The 2.1 update of the specification is a correction to the wording in a few loca
 
  - Changed the meaning of `extent` to reflect how all known implementations of the specification use extent.
  - Changed the wording to make it such that `LineTo(0,0)` is an invalid command by changing wording from SHOULD to MUST.
- - Corrected the valid range of values for a `ParameterInteger`
  - Added `CONTRIBUTING.md` file
 
 #### Issues:
@@ -16,7 +15,6 @@ The 2.1 update of the specification is a correction to the wording in a few loca
  List of issues addressed by this version:
 
  - [#54](https://github.com/mapbox/vector-tile-spec/issues/54) 
- - [#52](https://github.com/mapbox/vector-tile-spec/issues/52) 
  - [#51](https://github.com/mapbox/vector-tile-spec/issues/51) 
 
 #### Date of Release:

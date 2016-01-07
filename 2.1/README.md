@@ -121,7 +121,7 @@ A `ParameterInteger` is [zigzag](https://developers.google.com/protocol-buffers/
 ParameterInteger = (value << 1) ^ (value >> 31)
 ```
 
-Parameter values greater than `pow(2,30) - 1` or less than `-1 * pow(2,30)` are not supported.
+Parameter values greater than `pow(2,31) - 1` or less than `-1 * (pow(2,31) - 1)` are not supported.
 
 The following formula is used to decode a `ParameterInteger` to a value:
 
