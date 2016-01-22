@@ -52,7 +52,7 @@ In order to support values of varying string, boolean, integer, and floating poi
 
 A layer MUST contain an `extent` that describes the width and height of the tile in integer coordinates. The geometries within the Vector Tile MAY extend past the bounds of the tile's area as defined by the `extent`. Geometries that extend past the tile's area as defined by `extent` are often used as a buffer for rendering features that overlap multiple adjacent tiles.
 
-For example, if a tile has an `extent` of 4096, values between 0 and 4096 are considered within the tile's extent. A point at `(1,10)` or `(4095,10)` are within the extent of the tile. A point at `(0,10)` or `(4096,10)` is on the edge of the extent, but is considered within the tile's extent. A point at `(-1,10)` or `(4097,10)` is outside the extent of the tile.
+For example, if a tile has an `extent` of 4096, coordinate units within the tile refer to 1/4096th of its square dimensions. A coordinate of 0 is on the top or left edge of the tile, and a coordinate of 4096 is on the bottom or right edge. Coordinates from 1 through 4095 inclusive are fully within the extent of the tile, and coordinates less than 0 or greater than 4096 are fully outside the extent of the tile.  A point at `(1,10)` or `(4095,10)` is within the extent of the tile. A point at `(0,10)` or `(4096,10)` is on the edge of the extent. A point at `(-1,10)` or `(4097,10)` is outside the extent of the tile.
 
 ### 4.2. Features
 
