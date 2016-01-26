@@ -1,5 +1,26 @@
 # Vector Tile Spec Changelog
 
+### 2.1
+
+The 2.1 update of the specification is a correction to the wording in a few locations of the 2.0 specification. The wording of the specification is slightly changed in 2.1, but reflects important concepts that were improperly described by the 2.0 specification. 
+
+#### Summary of Changes:
+
+ - Changed the meaning of `extent` to reflect how all known implementations of the specification use extent.
+ - Changed the wording to make it such that `LineTo(0,0)` is an invalid command by changing wording from SHOULD to MUST.
+ - Added `CONTRIBUTING.md` file
+
+#### Issues:
+
+ List of issues addressed by this version:
+
+ - [#54](https://github.com/mapbox/vector-tile-spec/issues/54) 
+ - [#51](https://github.com/mapbox/vector-tile-spec/issues/51) 
+
+#### Date of Release:
+
+January 19th, 2016
+
 ### 2.0
 
 The focus of version `2.0` of the Mapbox Vector Tile specification is the clarification of the intent of the intial version of the specification and the definition of interior and exterior rings within polygons. The fields within the protobuffer are more clearly defined in this version of the specification and the steps for decoders and encoders are more explicity declared. 
