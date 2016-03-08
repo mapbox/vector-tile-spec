@@ -47,7 +47,7 @@ Winding order example
   fill: #FF4136;
 }
 .render {
-  opacity: 0.5;
+  opacity: 0.35;
 }
 .wo-block svg {
   width: 100%;
