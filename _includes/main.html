@@ -1,0 +1,8 @@
+{% for post in site.posts reversed %}
+<section id="{{ post.title }}">
+  {% if post.title != "Introduction" %}
+  <h2 class="section-header">{{ post.title }}</h2>
+  {% endif %}
+  <div class="post-content">{{ post.content }}</div>
+</section>
+{% endfor %}

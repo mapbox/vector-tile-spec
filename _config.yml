@@ -1,0 +1,16 @@
+versions:
+  - 2.1
+  - 2.0
+  - 1.0.1
+  - 1.0.0
+
+authors:
+  - Vladimir Agafonkin
+  - John Firebaugh
+  - Eric Fischer
+  - Konstantin Käfer
+  - Charlie Loyd
+  - Tom MacWright
+  - Artem Pavlenko
+  - Dane Springmeyer
+  - Blake Thompson
