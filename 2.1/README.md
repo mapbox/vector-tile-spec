@@ -12,11 +12,11 @@ This document specifies a space-efficient encoding format for tiled geographic v
 
 The Vector Tile format uses [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) as a encoding format. Protocol Buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data.
 
-## 2.1. File Extension
+### 2.1. File Extension
 
 The filename extension for Vector Tile files SHOULD be `mvt`. For example, a file might be named `vector.mvt`.
 
-## 2.2. Multipurpose Internet Mail Extensions (MIME)
+### 2.2. Multipurpose Internet Mail Extensions (MIME)
 
 When serving Vector Tiles the MIME type SHOULD be `application/vnd.mapbox-vector-tile`.
 
@@ -143,7 +143,7 @@ A `MoveTo` command with a command count of `n` MUST be immediately followed by `
    * Within POLYGON geometries, this coordinate defines the starting vertex of a new linear ring.
 2. Moves the cursor to `(pX, pY)`.
 
-#### 4.3.3.2. LineTo Command
+##### 4.3.3.2. LineTo Command
 
 A `LineTo` command with a command count of `n` MUST be immediately followed by `n` pairs of `ParameterInteger`s. Each pair `(dX, dY)`:
 
@@ -154,7 +154,7 @@ A `LineTo` command with a command count of `n` MUST be immediately followed by `
 
 For any pair of `(dX, dY)` the `dX` and `dY` MUST NOT both be `0`.
 
-#### 4.3.3.3. ClosePath Command
+##### 4.3.3.3. ClosePath Command
 
 A `ClosePath` command MUST have a command count of 1 and no parameters. The command closes the current linear ring of a POLYGON geometry via a line segment beginning at the cursor `(cX, cY)` and ending at the starting vertex of the current linear ring.
 
@@ -230,7 +230,7 @@ Encoded as: [ 9 50 34 ]
               | |  `> Decoded: ((34 >> 1) ^ (-(34 & 1))) = +17
               | `> Decoded: ((50 >> 1) ^ (-(50 & 1))) = +25
               | ===== relative MoveTo(+25, +17) == create point (25,17)
-              `> [00001 001] = command id 1 (MoveTo), length 1
+              `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
 ##### 4.3.5.2. Example Multi Point
@@ -253,7 +253,7 @@ Encoded as: [ 17 10 14 3 9 ]
                |  |  `> Decoded: ((34 >> 1) ^ (-(34 & 1))) = +7
                |  `> Decoded: ((50 >> 1) ^ (-(50 & 1))) = +5
                | ===== relative MoveTo(+25, +17) == create point (25,17)
-               `> [00010 001] = command id 1 (MoveTo), length 2
+               `> [00010 001] = command id 1 (MoveTo), command count 2
 ```
 
 ##### 4.3.5.3. Example Linestring
@@ -274,9 +274,9 @@ This would require three commands:
 Encoded as: [ 9 4 4 18 0 16 16 0 ]
               |      |      ==== relative LineTo(+8, +0) == Line to Point (10, 10)
               |      | ==== relative LineTo(+0, +8) == Line to Point (2, 10)
-              |      `> [00010 010] = command id 2 (LineTo), length 2
+              |      `> [00010 010] = command id 2 (LineTo), command count 2
               | === relative MoveTo(+2, +2)
-              `> [00001 001] = command id 1 (MoveTo), length 1
+              `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
 ##### 4.3.5.4. Example Multi Linestring
@@ -302,14 +302,14 @@ This would require the following commands:
 ```
 Encoded as: [ 9 4 4 18 0 16 16 0 9 17 17 10 4 8 ]
               |      |           |        | === relative LineTo(+2, +4) == Line to Point (3,5)
-              |      |           |        `> [00001 010] = command id 2 (LineTo), length 1
+              |      |           |        `> [00001 010] = command id 2 (LineTo), command count 1
               |      |           | ===== relative MoveTo(-9, -9) == Start new line at (1,1)
-              |      |           `> [00001 001] = command id 1 (MoveTo), length 1
+              |      |           `> [00001 001] = command id 1 (MoveTo), command count 1
               |      |      ==== relative LineTo(+8, +0) == Line to Point (10, 10)
               |      | ==== relative LineTo(+0, +8) == Line to Point (2, 10)
-              |      `> [00010 010] = command id 2 (LineTo), length 2
+              |      `> [00010 010] = command id 2 (LineTo), command count 2
               | === relative MoveTo(+2, +2)
-              `> [00001 001] = command id 1 (MoveTo), length 1
+              `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
 ##### 4.3.5.5. Example Polygon
@@ -330,12 +330,12 @@ Would encoded by using the following commands:
 
 ```
 Encoded as: [ 9 6 12 18 10 12 24 44 15 ]
-              |       |              `> [00001 111] command id 7 (ClosePath), length 1
+              |       |              `> [00001 111] command id 7 (ClosePath), command count 1
               |       |       ===== relative LineTo(+12, +22) == Line to Point (20, 34)
               |       | ===== relative LineTo(+5, +6) == Line to Point (8, 12)
-              |       `> [00010 010] = command id 2 (LineTo), length 2
+              |       `> [00010 010] = command id 2 (LineTo), command count 2
               | ==== relative MoveTo(+3, +6)
-              `> [00001 001] = command id 1 (MoveTo), length 1
+              `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
 ##### 4.3.5.6. Example Multi Polygon
