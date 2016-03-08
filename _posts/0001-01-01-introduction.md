@@ -1,5 +1,6 @@
 ---
 title: Introduction
+id: introduction
 ---
 
 # Mapbox Vector Tile Specification

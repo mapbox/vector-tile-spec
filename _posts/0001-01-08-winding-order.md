@@ -1,5 +1,6 @@
 ---
 title: Winding Order
+id: winding-order
 ---
 
 Winding order refers to the direction a ring is drawn in a vector tile, either clockwise or counter-clockwise. Many geometries are multipolygons with "holes", which are also represented as polygon rings. It is important to be able to extract winding order so one is able to extract source data from a vector tile.

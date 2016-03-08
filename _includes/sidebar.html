@@ -3,7 +3,9 @@
 
 <h3>Sections</h3>
 <ul>
-{% for post in site.posts reversed %}<li><a href="#{{ post.title }}">{{ post.title }}</a></li>{% endfor %}
+{% for post in site.posts reversed %}
+  <li><a href="#{{ post.id }}">{{ post.title }}</a></li>
+{% endfor %}
 </ul>
 
 <h3>Versions</h3>
