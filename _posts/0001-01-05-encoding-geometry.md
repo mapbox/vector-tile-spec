@@ -3,7 +3,7 @@ title: Encoding Geometry
 id: encoding-geom
 ---
 
-To encode geographic information into a vector tile a tool must convert geographic coordinates, such as latitude and longitude, into vector tile grid coordinates. Vector tiles hold no concept of geographic information. They encode points, lines, and polygons as `x`,`y` pairs from the origin, which is the top left point of a grid.
+To encode geographic information into a vector tile a tool must convert geographic coordinates, such as latitude and longitude, into vector tile grid coordinates. Vector tiles hold no concept of geographic information. They encode points, lines, and polygons as `x`,`y` pairs relative to the top left of the grid in a right-down manner.
 
 Vector tiles do not store spatial information as we know it. Each vector tile is a grid
 
