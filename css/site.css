@@ -30,6 +30,45 @@ section {
 
 /*
 
+Attribute encoding example
+*/
+.attr {
+  padding: 0.5em;
+}
+.attr:hover {
+  color: #f6f6f6;
+  background: #85144b;
+}
+.feature,
+.attr {
+  background-color: rgba(0,0,0,0.07);
+}
+.tagset,
+.key,
+.value,
+.feature,
+.feat {
+  display: inline-block;
+  padding-right: 1em;
+  cursor: pointer;
+}
+.tagset.highlight {
+  background: #ffc28d;
+}
+.key.highlight {
+  background: #f9a0e5;
+}
+.value.highlight {
+  background: #b1d6c5;
+}
+.feature:hover,
+.feat.highlight {
+  background: #ccffe2;
+}
+
+
+/*
+
 Winding order example
 */
 #wo-01-1 {}

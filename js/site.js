@@ -19,7 +19,63 @@ window.onload = function() {
   btn.onclick = function() {
     next(stepCount);
   };
+
+  // attr encoding example
+  var feats = document.getElementsByClassName('feature');
+  for (var f = 0; f < feats.length; f++) {
+    feats[f].addEventListener('mouseenter', function() {
+      // get id
+      var id = this.getAttribute('data-feat');
+      var feat = document.getElementById('feat'+id);
+      feat.className += ' highlight';
+    });
+
+    feats[f].addEventListener('mouseleave', function() {
+      var pbffeats = document.getElementsByClassName('feat');
+      removeHighlights(pbffeats);
+    });
+  }
+
+  var attrs = document.getElementsByClassName('attr');
+  for (var a = 0; a < attrs.length; a++) {
+    attrs[a].addEventListener('mouseover', function() {
+
+      // get attr id
+      var id = this.getAttribute('data-attr');
+      // get key value
+      var key = this.getAttribute('data-key');
+      // get value value
+      var value = this.getAttribute('data-value');
+
+      // find all tags that match prop
+      var tagset = document.getElementById('attr'+id);
+      tagset.className += ' highlight';
+
+      // find pbf key representation
+      var pbfkey = document.getElementById('key-'+key);
+      pbfkey.className += ' highlight';
+
+      // find pbf value representation
+      var pbfvalue = document.getElementById('value-'+value);
+      pbfvalue.className += ' highlight';
+    });
+
+    attrs[a].addEventListener('mouseout', function() {
+      var tagsets = document.getElementsByClassName('tagset');
+      removeHighlights(tagsets);
+      var pbfkeys = document.getElementsByClassName('key');
+      removeHighlights(pbfkeys);
+      var pbfvalues = document.getElementsByClassName('value');
+      removeHighlights(pbfvalues);
+    });
+  }
 };
+
+function removeHighlights(array) {
+  for (var i = 0; i < array.length; i++) {
+    array[i].className = array[i].className.replace(' highlight', '');
+  }
+}
 
 // elem is a DOM selected element
 // size is number of cells width and height
