@@ -38,7 +38,12 @@ Winding order example
   height: 110%;
 }
 .ring {
-  stroke-miterlimit:10;
+  stroke-miterlimit: 10;
+  transform-origin: center;
+  -ms-transform-origin: center;
+  -moz-transform-origin: center;
+  -webkit-transform-origin: center;
+  -o-transform-origin: center;
 }
 .outer {
   fill:#0074D9;
@@ -56,11 +61,6 @@ Winding order example
 
 @-webkit-keyframes rotateCW {
   from {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -68,11 +68,6 @@ Winding order example
     transform: rotate(0deg);
   }
   to {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
@@ -82,11 +77,6 @@ Winding order example
 }
 @keyframes rotateCW {
   from {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -94,11 +84,6 @@ Winding order example
     transform: rotate(0deg);
   }
   to {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
@@ -108,11 +93,6 @@ Winding order example
 }
 @-webkit-keyframes rotateCCW {
   from {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
@@ -120,11 +100,6 @@ Winding order example
     transform: rotate(360deg);
   }
   to {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
@@ -134,11 +109,6 @@ Winding order example
 }
 @keyframes rotateCCW {
   from {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
     -webkit-transform: rotate(360deg);
@@ -146,11 +116,6 @@ Winding order example
     transform: rotate(360deg);
   }
   to {
-    transform-origin: center;
-    -ms-transform-origin: center;
-    -moz-transform-origin: center;
-    -webkit-transform-origin: center;
-    -o-transform-origin: center;
     -ms-transform: rotate(0deg);
     -moz-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
