@@ -33,3 +33,7 @@ If you are interested in contributing please refer to the [CONTRIBUTING.md](CONT
 * Artem Pavlenko
 * Dane Springmeyer
 * Blake Thompson
+
+## Translations
+
+* [简体中文](https://github.com/jingsam/vector-tile-spec/blob/master/2.1/README_zh.md)
