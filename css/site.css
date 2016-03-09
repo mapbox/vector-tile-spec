@@ -38,7 +38,12 @@ Winding order example
   height: 110%;
 }
 .ring {
-  stroke-miterlimit:10;
+  stroke-miterlimit: 10;
+  transform-origin: center;
+  -ms-transform-origin: center;
+  -moz-transform-origin: center;
+  -webkit-transform-origin: center;
+  -o-transform-origin: center;
 }
 .outer {
   fill:#0074D9;

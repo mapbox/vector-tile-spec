@@ -34,7 +34,7 @@ In order for renderers to appropriately distinguish which polygons are holes and
         </svg>
       </div>
       <div class="col3 pad1">
-        <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+        <svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 400 400">
           <circle cx="204.02" cy="200" r="126.77" class="ring outer render"/>
         </svg>
       </div>
