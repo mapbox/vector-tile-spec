@@ -1,5 +1,6 @@
 body {
   margin: 3em auto;
+  padding: 0 2em;
   max-width: 70em;
 }
 .content ol, .content ul {
@@ -26,6 +27,12 @@ section {
 }
 .js-example-body {
   padding: 1em;
+}
+td {
+  min-width: 80px;
+}
+td:nth-child(2) {
+  width: 175px;
 }
 
 
