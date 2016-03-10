@@ -46,12 +46,55 @@ Oversimplification example
 }
 .simp-geom {}
 .simp-poly {
-  fill:#0074D9;
+  fill:#c0c0c0;
 }
 .simp-ring {
   fill: none;
-  stroke:#FF4136;
   stroke-miterlimit: 10;
+  stroke-width: 2;
+}
+.simp-ring-outer {
+  stroke: #0074D9;
+}
+.simp-ring-inner {
+  stroke: #FF4136;
+}
+.simp-dashed {
+  fill: none;
+  stroke: #c0c0c0;
+  stroke-dasharray: 6,6;
+}
+
+
+/*
+
+Flipped polygon example
+*/
+.flip-example g {
+  opacity: 0;
+  transition: 1s;
+}
+.flip-example g.show {
+  opacity: 1;
+}
+.flip-grid {
+  fill: #e5e5e5;
+}
+.flip-ring {
+  fill: none;
+  stroke-miterlimit: 10;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.flip-dashed {
+  stroke-dasharray:6,6;
+  stroke: #c0c0c0;
+}
+.flip-outer {
+  stroke: #0074D9;
+}
+.flip-inner {
+  stroke: #FF4136;
 }
 
 

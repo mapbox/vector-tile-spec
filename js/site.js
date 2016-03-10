@@ -72,28 +72,52 @@ window.onload = function() {
 
   // simplification & invalid polygon examples
   setInterval(function() {
-    rotateInvalids();
-  }, 2000);
+    rotateInvalids('simp');
+  }, 3000);
+
+  setInterval(function() {
+    rotateFlips('flip');
+  }, 3000);
 };
 
 var invalidStep = 2;
-function rotateInvalids() {
+var flipStep = 2;
+function rotateInvalids(prefix) {
   console.log(invalidStep);
   try {
     // show this one
-    var invalid = document.getElementById('simp'+invalidStep);
+    var invalid = document.getElementById(prefix+invalidStep);
     invalid.setAttribute('class', ' show');
     console.log(invalid);
 
     // hide previous
     var p = (invalidStep == 1) ? 4 : invalidStep - 1;
-    var prev = document.getElementById('simp'+p);
+    var prev = document.getElementById(prefix+p);
     prev.setAttribute('class', '');
 
     // increment
     invalidStep++;
   } catch (err) {
     invalidStep = 1;
+  }
+}
+function rotateFlips(prefix) {
+  console.log(flipStep);
+  try {
+    // show this one
+    var flip = document.getElementById(prefix+flipStep);
+    flip.setAttribute('class', ' show');
+    console.log(flip);
+
+    // hide previous
+    var p = (flipStep == 1) ? 4 : flipStep - 1;
+    var prev = document.getElementById(prefix+p);
+    prev.setAttribute('class', '');
+
+    // increment
+    flipStep++;
+  } catch (err) {
+    flipStep = 1;
   }
 }
 

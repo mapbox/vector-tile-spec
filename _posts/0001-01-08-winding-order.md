@@ -15,11 +15,6 @@ In order for renderers to appropriately distinguish which polygons are holes and
 
   <div class="js-example-body">
     <div class="wo-block col12 clearfix">
-      <div class="col6 pad1"></div>
-      <div class="col3 pad1"></div>
-      <div class="col3 pad1"></div>
-    </div>
-    <div class="wo-block col12 clearfix">
       <div class="col6 pad1"><strong>Description</strong></div>
       <div class="col3 pad1" style="text-align: center;"><strong>Winding order</strong></div>
       <div class="col3 pad1" style="text-align: center;"><strong>Rendered</strong></div>
