@@ -1,5 +1,5 @@
 ---
-title: Encoding Geometry
+title: Encoding geometry
 id: encoding-geom
 ---
 

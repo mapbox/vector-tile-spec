@@ -69,7 +69,33 @@ window.onload = function() {
       removeHighlights(pbfvalues);
     });
   }
+
+  // simplification & invalid polygon examples
+  setInterval(function() {
+    rotateInvalids();
+  }, 2000);
 };
+
+var invalidStep = 2;
+function rotateInvalids() {
+  console.log(invalidStep);
+  try {
+    // show this one
+    var invalid = document.getElementById('simp'+invalidStep);
+    invalid.setAttribute('class', ' show');
+    console.log(invalid);
+
+    // hide previous
+    var p = (invalidStep == 1) ? 4 : invalidStep - 1;
+    var prev = document.getElementById('simp'+p);
+    prev.setAttribute('class', '');
+
+    // increment
+    invalidStep++;
+  } catch (err) {
+    invalidStep = 1;
+  }
+}
 
 function removeHighlights(array) {
   for (var i = 0; i < array.length; i++) {

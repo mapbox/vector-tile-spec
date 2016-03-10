@@ -1,5 +1,5 @@
 ---
-title: Winding Order
+title: Winding order
 id: winding-order
 ---
 
@@ -110,5 +110,4 @@ Ring 3: Clockwise</code></pre>
     </div>
   </div>
 </div>
-
 

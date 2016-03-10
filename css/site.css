@@ -28,6 +28,33 @@ section {
   padding: 1em;
 }
 
+
+/*
+
+Oversimplification example
+*/
+.simplification-example {
+  width: 100%;
+  height: auto;
+}
+.simplification-example g {
+  opacity: 0;
+  transition: 1s;
+}
+.simplification-example g.show {
+  opacity: 1;
+}
+.simp-geom {}
+.simp-poly {
+  fill:#0074D9;
+}
+.simp-ring {
+  fill: none;
+  stroke:#FF4136;
+  stroke-miterlimit: 10;
+}
+
+
 /*
 
 Attribute encoding example

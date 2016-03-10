@@ -10,9 +10,9 @@
 
 <h3>Versions</h3>
 <ul>
-  {% for v in site.versions %}
-    <li><a href="https://github.com/mapbox/vector-tile-spec/tree/master/{{v}}">{{v}}</a></li>
-  {% endfor %}
+{% for v in site.versions %}
+  <li><a href="https://github.com/mapbox/vector-tile-spec/tree/master/{{v}}">{{v}}</a></li>
+{% endfor %}
 </ul>
 
 <h3>License</h3>
@@ -23,5 +23,7 @@
 
 <h3>Authors</h3>
 <ul>
-  {% for a in site.authors %}<li>{{a}}</li>{% endfor %}
+{% for a in site.authors %}
+  <li>{{a}}</li>
+{% endfor %}
 </ul>

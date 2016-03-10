@@ -1,5 +1,5 @@
 ---
-title: Encoding Attributes
+title: Encoding attributes
 id: encoding-attr
 ---
 
