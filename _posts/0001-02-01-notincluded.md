@@ -9,6 +9,14 @@ This specification is very explicit in the way a vector tile should pack data. H
 
 This specification IS NOT intended to explain how to use vector tiles as a dataset. This is something that has been considered for the future, but it will likely be a separate specification. This specification does not cover how to store, request, or share vector tiles. Consider this specification similar to how the PNG spec explains how to *pack data*.
 
+### Clipping
+
+The specification does not explain how geographic data should be clipped between vector tiles since clipping, like simplification, can be executed in many ways. Mapbox specifically clips features at a buffer around the tile (see the encoding example above). Any geometry within this buffer is assumed to carry over to another tile. This is up for consideration for a future release.
+
+*Note: encoded geometry in vector tiles can actually extend beyond the bound of the tile. This means features are not required to be clipped.*
+
+A common question, when it comes to clipping is "how do renderers know which lines to connect for clipped geometry?". This is the very reason Mapbox adds a buffer to vector tiles and clipped geometry. When it is time to render the canvas is set to the exact tile size, which sets the edges outside of the visual frame, thus the tiles all line up. Therefore, there is no need to know which nodes are part of others for rendering purposes. That being said, one *could* use the `id` field in the protobuf to store information necessary for reconstructing polygons.
+
 ### Simplification
 
 The conversion from geographic coordinates (latitude and longitude) to vector tile coordinates (x, y) is an important step, but can be implemted in many different ways prior to vector tile encoding. It is not included in this specification, but there are some important GOTCHAs we'd like to point out.
@@ -96,3 +104,6 @@ The conversion from geographic coordinates (latitude and longitude) to vector ti
     </div>
   </div>
 </div>
+
+
+
