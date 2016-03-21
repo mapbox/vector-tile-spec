@@ -1,6 +1,6 @@
 ---
 title: What the spec doesn't cover
-id: null
+id: not-included
 ---
 
 This specification is very explicit in the way a vector tile should pack data. However, there are some related concepts that this specification does not cover.
