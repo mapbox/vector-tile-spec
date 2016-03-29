@@ -83,12 +83,10 @@ window.onload = function() {
 var invalidStep = 2;
 var flipStep = 2;
 function rotateInvalids(prefix) {
-  console.log(invalidStep);
   try {
     // show this one
     var invalid = document.getElementById(prefix+invalidStep);
     invalid.setAttribute('class', ' show');
-    console.log(invalid);
 
     // hide previous
     var p = (invalidStep == 1) ? 4 : invalidStep - 1;
@@ -102,12 +100,10 @@ function rotateInvalids(prefix) {
   }
 }
 function rotateFlips(prefix) {
-  console.log(flipStep);
   try {
     // show this one
     var flip = document.getElementById(prefix+flipStep);
     flip.setAttribute('class', ' show');
-    console.log(flip);
 
     // hide previous
     var p = (flipStep == 1) ? 4 : flipStep - 1;

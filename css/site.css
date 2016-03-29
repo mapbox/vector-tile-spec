@@ -1,5 +1,9 @@
-body {
-  margin: 3em auto;
+body {}
+.header {
+  margin-bottom: 3em;
+}
+.container {
+  margin: auto;
   padding: 0 2em;
   max-width: 70em;
 }
@@ -33,6 +37,12 @@ td {
 }
 td:nth-child(2) {
   width: 175px;
+}
+
+.header a.fr {
+  color: #404040;
+  font-size: 0.9em;
+  font-weight: 900;
 }
 
 

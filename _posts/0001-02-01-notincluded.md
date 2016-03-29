@@ -67,7 +67,7 @@ The conversion from geographic coordinates (latitude and longitude) to vector ti
     </div>
     <div class="col12 clearfix">
       <div class="col6">
-        <p>Simplifying a polygon can actually <strong>reverse the winding order</strong>. Consider a triangle polygon that is simplified to the vector tile grid. The simplified point can cross over the polygon and "flip" it, rendering its winding order reversed.</p>
+        <p>When spatial coordaintes are converted to tile coordaintes, they are rounded to integers. Simplifying (rounding) the coordinates can <strong>reverse the winding order</strong>. Consider a triangle polygon that is simplified to the vector tile grid. The rounded point can cross over the polygon and "flip" it, rendering its winding order reversed.</p>
       </div>
       <div class="col5 fr">
         <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" class="flip-example">

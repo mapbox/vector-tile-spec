@@ -27,3 +27,7 @@ Vector tiles do not store spatial information as we know it. Each vector tile is
     </div>
   </div>
 </div>
+
+### How are geometry clipped?
+
+Geometry clipping is not considered part of this specification. 

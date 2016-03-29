@@ -16,4 +16,4 @@ A specification is an important means of setting standards around how data are c
 1. highlight real-world usage of the Mapbox Vector Tile Specification
 1. keep track of specification versions
 
-<a class="button fill-green icon github" href="https://github.com/mapbox/vector-tile-spec">View on github</a>
+<a class="button fill-green icon clipboard" href="{{site.version_url}}{{site.current}}/">Complete spec ({{site.current}})</a> <a class="button stroke quiet icon alert" href="{{site.spec_url}}issues/">Report an issue</a>

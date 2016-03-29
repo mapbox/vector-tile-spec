@@ -4,6 +4,9 @@ versions:
   - 1.0.1
   - 1.0.0
 
+spec_url: https://github.com/mapbox/vector-tile-spec/
+version_url: https://github.com/mapbox/vector-tile-spec/tree/master/
+
 current: 2.1
 
 authors:
