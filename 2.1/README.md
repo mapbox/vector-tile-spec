@@ -219,7 +219,7 @@ Polygon geometries MUST NOT have any interior rings that intersect and interior 
 
 An example encoding of a point located at:
 
-* (25,7)
+* (25,17)
 
 This would require a single command:
 
