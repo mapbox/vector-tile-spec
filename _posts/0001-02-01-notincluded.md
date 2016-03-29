@@ -23,8 +23,8 @@ The conversion from geographic coordinates (latitude and longitude) to vector ti
 
 <div class="js-example clearfix">
   <div class="js-example-header">
-    <h3>Simplification GOTCHAs</h3>
-    <p>Even though simplification is not a part of the specification, these are some tricky situations to keep in mind as you implement a simplification algorithm.</p>
+    <h3>Simplification & Rounding GOTCHAs</h3>
+    <p>Even though simplification is not a part of the specification, these are some tricky situations to keep in mind as you implement a simplification or rounding algorithm.</p>
   </div>
   <div class="js-example-body">
     <div class="col12 clearfix">
@@ -104,6 +104,7 @@ The conversion from geographic coordinates (latitude and longitude) to vector ti
     </div>
   </div>
 </div>
+
 
 
 
