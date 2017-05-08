@@ -252,7 +252,7 @@ Encoded as: [ 17 10 14 3 9 ]
                |  |  | === relative MoveTo(-2, -5) == create point (3,2)
                |  |  `> Decoded: ((34 >> 1) ^ (-(34 & 1))) = +7
                |  `> Decoded: ((50 >> 1) ^ (-(50 & 1))) = +5
-               | ===== relative MoveTo(+25, +17) == create point (25,17)
+               | ===== relative MoveTo(+5, +7) == create point (5,7)
                `> [00010 001] = command id 1 (MoveTo), command count 2
 ```
 
