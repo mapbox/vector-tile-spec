@@ -37,3 +37,4 @@ If you are interested in contributing please refer to the [CONTRIBUTING.md](CONT
 ## Translations
 
 * [简体中文](https://github.com/jingsam/vector-tile-spec/blob/master/2.1/README_zh.md)
+* [日本語](https://github.com/madefor/vector-tile-spec/blob/master/2.1/README.md)
