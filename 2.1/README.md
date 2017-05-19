@@ -381,6 +381,19 @@ This polygon would be encoded with the following set of commands:
 * LineTo(+0,-4) // Cursor at 17,13
 * ClosePath // This is an interior ring because area is negative!
 
+```
+Encoded as: [ 9 0 0 26 20 0 0 20 19 0 15 9 22 2 26 18 0 0 18 17 0 15 9 4 13 26 0 8 8 0 0 7 15 ]
+              |      |                |  |       |                |  |       |              `> [00001 111] (ClosePath)
+              |      |                |  |       |                |  |       `> [00011 010] = (LineTo), command count 3
+              |      |                |  |       |                |  `> [00001 001] = command id 1 (MoveTo), command count 1
+              |      |                |  |       |                `> [00001 111] (ClosePath)
+              |      |                |  |       `> [00011 010] = (LineTo), command count 3
+              |      |                | `> [00001 001] = command id 1 (MoveTo), command count 1
+              |      |                `> [00001 111] (ClosePath)
+              |      `> [00011 010] = (LineTo), command count 3
+              `> [00001 001] = command id 1 (MoveTo), command count 1
+```
+
 ### 4.4. Feature Attributes
 
 Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
