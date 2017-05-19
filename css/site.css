@@ -1,0 +1,315 @@
+body {
+  margin: 3em auto;
+  padding: 0 2em;
+  max-width: 70em;
+}
+.content ol, .content ul {
+  margin: 1em 0;
+}
+.content ol li, .content ul li {
+  list-style-type: disc;
+  margin-left: 2em;
+  line-height: 1.5em;
+}
+.sidebar h3 {
+  margin-top: 2em;
+}
+section {
+  margin-bottom: 3em;
+}
+.js-example {
+  border: 1px solid #e5e5e5;
+}
+.js-example-header {
+  background: #ffffe5;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+.js-example-body {
+  padding: 1em;
+}
+td {
+  min-width: 80px;
+}
+td:nth-child(2) {
+  width: 175px;
+}
+
+
+/*
+
+Oversimplification example
+*/
+.simplification-example {
+  width: 100%;
+  height: auto;
+}
+.simplification-example g {
+  opacity: 0;
+  transition: 1s;
+}
+.simplification-example g.show {
+  opacity: 1;
+}
+.simp-geom {}
+.simp-poly {
+  fill:#c0c0c0;
+}
+.simp-ring {
+  fill: none;
+  stroke-miterlimit: 10;
+  stroke-width: 2;
+}
+.simp-ring-outer {
+  stroke: #0074D9;
+}
+.simp-ring-inner {
+  stroke: #FF4136;
+}
+.simp-dashed {
+  fill: none;
+  stroke: #c0c0c0;
+  stroke-dasharray: 6,6;
+}
+
+
+/*
+
+Flipped polygon example
+*/
+.flip-example g {
+  opacity: 0;
+  transition: 1s;
+}
+.flip-example g.show {
+  opacity: 1;
+}
+.flip-grid {
+  fill: #e5e5e5;
+}
+.flip-ring {
+  fill: none;
+  stroke-miterlimit: 10;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.flip-dashed {
+  stroke-dasharray:6,6;
+  stroke: #c0c0c0;
+}
+.flip-outer {
+  stroke: #0074D9;
+}
+.flip-inner {
+  stroke: #FF4136;
+}
+
+
+/*
+
+Attribute encoding example
+*/
+.attr {
+  padding: 0.5em;
+}
+.attr:hover {
+  color: #f6f6f6;
+  background: #85144b;
+}
+.feature,
+.attr {
+  background-color: rgba(0,0,0,0.07);
+}
+.tagset,
+.key,
+.value,
+.feature,
+.feat {
+  display: inline-block;
+  padding-right: 1em;
+  cursor: pointer;
+}
+.tagset.highlight {
+  background: #ffc28d;
+}
+.key.highlight {
+  background: #f9a0e5;
+}
+.value.highlight {
+  background: #b1d6c5;
+}
+.feature:hover,
+.feat.highlight {
+  background: #ccffe2;
+}
+
+
+/*
+
+Winding order example
+*/
+#wo-01-1 {}
+.rings {
+  width: 100%;
+  height: 110%;
+}
+.ring {
+  stroke-miterlimit: 10;
+  transform-origin: center;
+  -ms-transform-origin: center;
+  -moz-transform-origin: center;
+  -webkit-transform-origin: center;
+  -o-transform-origin: center;
+}
+.outer {
+  fill:#0074D9;
+}
+.inner {
+  fill: #FF4136;
+}
+.render {
+  opacity: 0.35;
+}
+.wo-block svg {
+  width: 100%;
+  height: auto;
+}
+
+@-webkit-keyframes rotateCW {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotateCW {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes rotateCCW {
+  from {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+  to {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}
+@keyframes rotateCCW {
+  from {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+  to {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+}
+.ccw {
+  -webkit-animation: rotateCCW 8s linear infinite;
+  -moz-animation: rotateCCW 8s linear infinite;
+  -ms-animation: rotateCCW 8s linear infinite;
+  -o-animation: rotateCCW 8s linear infinite;
+  animation: rotateCCW 8s linear infinite;
+  transform-origin: 50% 50%;
+}
+.cw {
+  -webkit-animation: rotateCW 8s linear infinite;
+  -moz-animation: rotateCW 8s linear infinite;
+  -ms-animation: rotateCW 8s linear infinite;
+  -o-animation: rotateCW 8s linear infinite;
+  animation: rotateCW 8s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+
+
+/*
+
+Encoding Example
+*/
+#visuals {
+  float: right;
+  margin-left: 1em;
+}
+canvas {
+  transition: 1s;
+}
+#info {
+  float: left;
+  width: auto;
+}
+#vt-title {
+  display: block;
+  font-size: 0.8em;
+  font-weight: 500;
+  margin: 0;
+}
+#vt-command {
+  font-size: 1.3em;
+  margin: 0 0 1em;
+}
+#vt-description span  {
+  font-family: 'Source Code Pro', Menlo, Consolas, Monaco, monospace;
+}
+.poly {
+  color: white;
+  padding: .03em 0.3em;
+  font-size: 0.8em;
+  display: inline-block;
+  border-radius: 0.3em;
+  font-weight: 900;
+}
+.blue { 
+  background-color: #0074D9;
+}
+.red { 
+  background-color: #FF4136;
+}
+.black { 
+  background-color: #333333;
+}
+#vt-next {
+  float: right;
+}
+#vt-next:hover {}
+#vt-next:focus {}
+#vt-command-steps {
+  display: block;
+}
+.command-step {
+}

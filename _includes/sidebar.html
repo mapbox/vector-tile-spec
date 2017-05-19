@@ -1,0 +1,29 @@
+<a class="github-button" href="https://github.com/mapbox/vector-tile-spec" data-icon="octicon-star" data-style="mega" data-count-href="/mapbox/vector-tile-spec/stargazers" data-count-api="/repos/mapbox/vector-tile-spec#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star mapbox/vector-tile-spec on GitHub">Star</a>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+
+<h3>Sections</h3>
+<ul>
+{% for post in site.posts reversed %}
+  <li><a href="#{{ post.id }}">{{ post.title }}</a></li>
+{% endfor %}
+</ul>
+
+<h3>Versions</h3>
+<ul>
+{% for v in site.versions %}
+  <li><a href="https://github.com/mapbox/vector-tile-spec/tree/master/{{v}}">{{v}}</a></li>
+{% endfor %}
+</ul>
+
+<h3>License</h3>
+<p>The text of this specification is licensed under a <a href="http://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution 3.0 United States License</a>. However, the use of this spec in products and code is entirely free: there are no royalties, restrictions, or requirements.</p>
+
+<h3>Contributing</h3>
+<p>If you are interested in contributing please refer to the <a href="https://github.com/mapbox/vector-tile-spec/tree/master/CONTRIBUTING.md"><code>CONTRIBUTING.md</code></a> file.</p>
+
+<h3>Authors</h3>
+<ul>
+{% for a in site.authors %}
+  <li>{{a}}</li>
+{% endfor %}
+</ul>
