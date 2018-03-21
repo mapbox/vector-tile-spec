@@ -62,7 +62,7 @@ A feature MUST contain a `type` field as described in the Geometry Types section
 
 A feature MAY contain a `tags` field. Feature-level metadata, if any, SHOULD be stored in the `tags` field.
 
-A feature MAY contain an `id` field. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer.
+A feature MAY contain an `id` field. If a feature has an `id` field, the value of the `id` MUST be an integer and SHOULD be unique among the features of the parent layer.
 
 ### 4.3. Geometry Encoding
 
