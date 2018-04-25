@@ -41,7 +41,7 @@ message Tile {
                 optional GeomType type = 3 [ default = UNKNOWN ];
 
                 // Contains a stream of commands and parameters (vertices).
-                // A detailed description on geometry encoding is located in 
+                // A detailed description on geometry encoding is located in
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
         }
@@ -68,6 +68,8 @@ message Tile {
                 // Although this is an "optional" field it is required by the specification.
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
+
+                optional uint32 dimensions = 6 [ default = 2 ];
 
                 extensions 16 to max;
         }
