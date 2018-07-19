@@ -15,7 +15,8 @@ message Tile {
         // Variant type encoding
         // The use of values is described in section 4.1 of the specification
         message Value {
-                // Exactly one of these values must be present in a valid message
+                // No more than one of these values may be present in a valid message.
+                // If no value is written, the message is null.
                 optional string string_value = 1;
                 optional float float_value = 2;
                 optional double double_value = 3;
