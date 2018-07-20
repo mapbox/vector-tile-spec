@@ -77,10 +77,10 @@ message Tile {
                 // string       |  5  | index to string_values in layer
                 // int          |  6  | index to int_values in layer
                 // uint         |  7  | index to uint_values in layer
-                // list / map   |  8  | (if 5th bit is 0 is list)
+                // list / map   |  8  | (if 4th bit is 0 is list)
                 //              |     |   remaining bits are length of the list where
                 //              |     |   each item in the list is a complex value
-                //              |     | (if 5th bit is 1 is map)
+                //              |     | (if 4th bit is 1 is map)
                 //              |     |   remaining bits are the number of key_index and 
                 //              |     |   complex_value pairs to follow (same as properties)
                 repeated uint64 properties = 5 [ packed = true ];
