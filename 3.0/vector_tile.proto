@@ -58,19 +58,19 @@ message Tile {
                 // This is the same value store as strings for use in values, so duplicates here
                 // will be pointing to the same indexed position. 
                 //
-                // An complex value has two parts, the first 4 bits are the type bits
+                // An complex value has two parts, the first 3 bits are the type bits
                 // and the remaining bits are the parameter bits. What is stored in the parameter
                 // bits is dependant on what the type bit is selected. For example for inline values,
                 // the parameter field is not an index but simply a value. For other types it might
                 // be an index position into a value storage of the layer.
                 // 
-                // uint64t type = complex_value & 0xF; // First 4 Bits
-                // uint64t parameter = complex_value >> 4; 
+                // uint64t type = complex_value & 0x7; // First 3 Bits
+                // uint64t parameter = complex_value >> 3; 
                 // 
                 //     Type     | Id  | Parameter
                 // ---------------------------------
-                // inline int   |  0  | value of integer ( values between -2^59+1 to 2^59-1 )
-                // inline uint  |  1  | value of unsigned integer ( values between 0 to 2^60-1 )
+                // inline int   |  0  | value of integer ( values between -2^60+1 to 2^60-1 )
+                // inline uint  |  1  | value of unsigned integer ( values between 0 to 2^61-1 )
                 // bool/null    |  2  | value of 0 = false, 1 = true, 2 = null
                 // float        |  3  | index to float_values in layer
                 // double       |  4  | index to double_values in layer
@@ -109,8 +109,6 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
 
-                // 
-                // An inline value is an integer
                 repeated string string_values = 7;
                 repeated double double_values = 8 [ packed = true ];
                 repeated float float_values = 9 [ packed = true ];
