@@ -1,0 +1,123 @@
+package vector_tile;
+
+option optimize_for = LITE_RUNTIME;
+
+message Tile {
+
+        // GeomType is described in section 4.3.4 of the specification
+        enum GeomType {
+             UNKNOWN = 0;
+             POINT = 1;
+             LINESTRING = 2;
+             POLYGON = 3;
+             CURVE = 4;    // like a LineString, but a spline
+             AREA = 5;     // like a Polygon, but a spline
+        }
+
+        // Variant type encoding
+        // The use of values is described in section 4.1 of the specification
+        message Value {
+                // No more than one of these values may be present in a valid message.
+                // If no value is written, the message is null.
+
+                optional string string_value = 1;
+                optional float float_value = 2;
+                optional double double_value = 3;
+                optional int64 int_value = 4;
+                optional uint64 uint_value = 5;
+                optional sint64 sint_value = 6;
+                optional bool bool_value = 7;
+
+                // Even numbered elements refer to the nth key in the layer's keys list
+                // Odd numbered elements refer to the nth value in the layer's values list
+                repeated uint32 hash_value = 8 [ packed = true ];
+
+                // Each element refers to the nth value in the layer's values list
+                repeated uint32 list_value = 9 [ packed = true ];
+
+                extensions 10 to max;
+        }
+
+        // Features are described in section 4.2 of the specification
+        message Feature {
+                // Use object_id if the id is not an integer
+                optional uint64 id = 1;
+
+                // Tags of this feature are encoded as repeated pairs of
+                // integers.
+                // A detailed description of tags is located in sections
+                // 4.2 and 4.4 of the specification
+                repeated uint32 tags = 2 [ packed = true ];
+
+                // The type of geometry stored in this feature.
+                optional GeomType type = 3 [ default = UNKNOWN ];
+
+                // Contains a stream of commands and parameters (vertices).
+                // A detailed description of geometry encoding is located in
+                // section 4.3 of the specification.
+                repeated uint32 geometry = 4 [ packed = true ];
+
+                // Representation of spline knots to be clarified:
+                // https://github.com/mapbox/vector-tile-spec/issues/114
+                repeated double knots = 5 [ packed = true ];
+
+                // If present, marks the geometry as explicitly MultiPoint,
+                // MultiLineString, or MultiPolygon
+                optional bool multigeometry = 6;
+
+                // If present, these are references into the layer's values,
+                // one per node (excluding ClosePath) of the geometry,
+                // either to a hash_value giving the keys and values of
+                // the node's attributes, or to a null value, indicating
+                // that the node has no attributes.
+                repeated uint32 node_attributes = 7 [ packed = true ];
+
+                // If present, these are delta-encoded elevations for each
+                // node (excluding ClosePath) in the geometry. If any nodes have only
+                // two dimensions specified, the missing elevations must
+                // be encoded here as NaN. Only finite elevations participate
+                // in delta encoding: the delta of the elevation after
+                // a NaN is relative to the last finite elevation.
+                // Elevations are in meters above or below the WGS84 ellipsoid.
+                repeated double node_elevations = 8 [ packed = true ];
+
+                // If present, this value represents the height of an
+                // extrusion of the entire feature.
+                optional double extruded_height = 9;
+
+                // If present, gives the id of the feature as a reference
+                // into the layer's values. If the id is an integer, use
+                // the id field (1) instead.
+                optional uint32 object_id = 10;
+        }
+
+        // Layers are described in section 4.1 of the specification
+        message Layer {
+                // Any compliant implementation must first read the version
+                // number encoded in this message and choose the correct
+                // implementation for this version number before proceeding to
+                // decode other parts of this message.
+                required uint32 version = 15 [ default = 1 ];
+
+                required string name = 1;
+
+                // The actual features in this tile.
+                repeated Feature features = 2;
+
+                // Dictionary encoding for keys
+                repeated string keys = 3;
+
+                // Dictionary encoding for values
+                repeated Value values = 4;
+
+                // Although this is an "optional" field it is required by the specification.
+                // See https://github.com/mapbox/vector-tile-spec/issues/47
+                optional uint32 extent = 5 [ default = 4096 ];
+
+                extensions 16 to max;
+        }
+
+        repeated Layer layers = 3;
+
+        extensions 16 to 8191;
+}
