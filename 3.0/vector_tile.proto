@@ -81,9 +81,9 @@ message Tile {
                 // Elevations are in meters above or below the WGS84 ellipsoid.
                 repeated double node_elevations = 8 [ packed = true ];
 
-                // If present, this value represents the elevation of an
+                // If present, this value represents the height of an
                 // extrusion of the entire feature.
-                optional double extruded_elevation = 9;
+                optional double extruded_height = 9;
 
                 // If present, gives the id of the feature as a reference
                 // into the layer's values. If the id is an integer, use
