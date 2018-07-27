@@ -49,7 +49,7 @@ message Tile {
                 // uses the properties field instead. This would only be used if version
                 // for a layer is 3 or greater and tags should not be used at that point
                 //
-                // The properties field is much like the tags value in the it is two integers
+                // The properties field is much like the tags value in that it is two integers
                 // pairs that reference key and value pairs however, it is broken out into a
                 // "key_index" and an "complex_value". 
                 // 
