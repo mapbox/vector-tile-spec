@@ -45,10 +45,9 @@ message Tile {
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
                 
-                // If present, gives the id of the feature as a reference
-                // into the layer's values. If the id is an integer, use
-                // the id field (1) instead.
-                optional uint32 object_id = 10;
+                // If present, gives the id of the feature.
+                // If the id is an integer, use the id field (1) instead.
+                optional uint32 string_id = 10;
         }
 
         // Layers are described in section 4.1 of the specification
