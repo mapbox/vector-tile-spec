@@ -45,38 +45,41 @@ message Tile {
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
                 
-                // Properties replace existing tags field and
-                // uses the properties field instead. This would only be used if version
-                // for a layer is 3 or greater and tags should not be used at that point
+                // Additional tags (or all the tags) of this feature may be
+                // encoded as repeated pairs of 32-bit integers, to take
+                // advantage of inline encoding of small values and of
+                // improved compression from use of repeated values.
                 //
-                // The properties field is much like the tags value in the it is two integers
-                // pairs that reference key and value pairs however, it is broken out into a
-                // "key_index" and an "complex_value". 
+                // This message may only be used if the layer version is >= 3.
+                //
+                // The properties field is much like the tags value in that it is a pair of
+                // integers that reference key and value pairs. However, the value reference
+                // is a "complex_value" that combines a type and an index.
                 // 
                 // The "key_index" is much like the key index in the use for tags, but instead
                 // of pointing to "keys" field in the Layers, it points to the "string_values".
                 // This is the same value store as strings for use in values, so duplicates here
                 // will be pointing to the same indexed position. 
                 //
-                // An complex value has two parts, the first 4 bits are the type bits
+                // An complex value has two parts: the lowest 4 bits are the type bits,
                 // and the remaining bits are the parameter bits. What is stored in the parameter
-                // bits is dependant on what the type bit is selected. For example for inline values,
-                // the parameter field is not an index but simply a value. For other types it might
-                // be an index position into a value storage of the layer.
+                // bits is dependent on the contents of the type bits. For example for inline values,
+                // the parameter field is not an index but simply a value. For other types it is
+                // an index position into a value storage of the layer.
                 // 
                 // uint64t type = complex_value & 0x0F; // First 4 Bits
                 // uint64t parameter = complex_value >> 4;
                 // 
                 //     Type     | Id  | Parameter
                 // ---------------------------------
-                // inline sint  |  0  | value of integer ( values between -2^59+1 to 2^59-1 )
-                // inline uint  |  1  | value of unsigned integer ( values between 0 to 2^60-1 )
+                // inline sint  |  0  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
+                // inline uint  |  1  | value of unsigned integer (values between 0 to 2^60-1)
                 // bool/null    |  2  | value of 0 = false, 1 = true, 2 = null
                 // float        |  3  | index to float_values in layer
                 // double       |  4  | index to double_values in layer
                 // string       |  5  | index to string_values in layer
-                // int          |  6  | index to int_values in layer
-                // uint         |  7  | index to uint_values in layer
+                // int          |  6  | index to sfixed64_values in layer
+                // uint         |  7  | index to fixed64_values in layer
                 // list / map   |  8  | (if 4th bit is 0 is list)
                 //              |     |   remaining bits are length of the list where
                 //              |     |   each item in the list is a complex value
@@ -112,8 +115,8 @@ message Tile {
                 repeated string string_values = 7;
                 repeated double double_values = 8 [ packed = true ];
                 repeated float float_values = 9 [ packed = true ];
-                repeated sint64 sint64_values = 10 [ packed = true ];
-                repeated uint64 uint64_values = 11 [ packed = true ];
+                repeated sfixed64 sfixed64_values = 10 [ packed = true ];
+                repeated fixed64 fixed64_values = 11 [ packed = true ];
 
                 extensions 16 to max;
         }
