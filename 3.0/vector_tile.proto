@@ -81,8 +81,8 @@ message Tile {
                 // bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
                 // list         |  8  | value is the number of sub-attributes to follow:
                 //              |     |   each item in the list is a complex value
-                // map          |  9  | value is the number of sub-attributes to follow:
-                //              |     |   each item is an index into layer.attribute_pool.keys
+                // map          |  9  | value is the number of pairs of sub-attributes to follow:
+                //              |     |   each pair is an index into layer.attribute_pool.keys
                 //              |     |   followed by a complex_value for the value
                 //
                 // Value types 10 through 15 are reserved for definition in future versions
