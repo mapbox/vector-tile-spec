@@ -31,11 +31,11 @@ message Tile {
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
 
-                // Tags of this feature are encoded as repeated pairs of
+                // Attributes of this feature are encoded as repeated pairs of
                 // integers.
-                // A detailed description of tags is located in sections
+                // A detailed description of attributes is located in sections
                 // 4.2 and 4.4 of the specification
-                repeated uint32 tags = 2 [ packed = true ];
+                repeated uint32 attributes = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
                 optional GeomType type = 3 [ default = UNKNOWN ];
@@ -45,21 +45,20 @@ message Tile {
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
                 
-                // Additional tags (or all the tags) of this feature may be
-                // encoded as repeated pairs of 32-bit integers, to take
-                // advantage of inline encoding of small values and of
-                // improved compression from use of repeated values.
+                // Additional attributes (or all the attributes) of this feature may be
+                // encoded as repeated pairs of 64-bit integers, to take
+                // advantage of inline encoding of small values,
+                // improved compression from use of repeated values,
+                // and support for list and map values.
                 //
                 // This message may only be used if the layer version is >= 3.
                 //
-                // The properties field is much like the tags value in that it is a pair of
+                // The inline_attributes field is much like the attributes field in that it is a pair of
                 // integers that reference key and value pairs. However, the value reference
                 // is a "complex_value" that combines a type and an index.
                 // 
-                // The "key_index" is much like the key index in the use for tags, but instead
-                // of pointing to "keys" field in the Layers, it points to the "string_values".
-                // This is the same value store as strings for use in values, so duplicates here
-                // will be pointing to the same indexed position. 
+                // The "key_index" is much like the key index in the use for attributes, but instead
+                // of pointing into layer.keys, it points into layer.attribute_pool.keys.
                 //
                 // An complex value has two parts: the lowest 4 bits are the type bits,
                 // and the remaining bits are the parameter bits. What is stored in the parameter
@@ -67,26 +66,35 @@ message Tile {
                 // the parameter field is not an index but simply a value. For other types it is
                 // an index position into a value storage of the layer.
                 // 
-                // uint64t type = complex_value & 0x0F; // First 4 Bits
-                // uint64t parameter = complex_value >> 4;
+                // uint64_t type = complex_value & 0x0F; // Bottom 4 bits
+                // uint64_t parameter = complex_value >> 4;
                 // 
                 //     Type     | Id  | Parameter
                 // ---------------------------------
-                // inline sint  |  0  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
-                // inline uint  |  1  | value of unsigned integer (values between 0 to 2^60-1)
-                // bool/null    |  2  | value of 0 = false, 1 = true, 2 = null
-                // float        |  3  | index to float_values in layer
-                // double       |  4  | index to double_values in layer
-                // string       |  5  | index to string_values in layer
-                // int          |  6  | index to sfixed64_values in layer
-                // uint         |  7  | index to fixed64_values in layer
-                // list / map   |  8  | (if 4th bit is 0 is list)
-                //              |     |   remaining bits are length of the list where
+                // string       |  0  | index into layer.attribute_pool.string_values
+                // float        |  1  | index into layer.attribute_pool.float_values
+                // double       |  2  | index into layer.attribute_pool.double_values
+                // int          |  3  | index into layer.attribute_pool.signed_integer_values
+                // uint         |  4  | index into layer.attribute_pool.unsigned_integer_values
+                // inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
+                // inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
+                // bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
+                // list         |  8  | value is the number of sub-attributes to follow:
                 //              |     |   each item in the list is a complex value
-                //              |     | (if 4th bit is 1 is map)
-                //              |     |   remaining bits are the number of key_index and 
-                //              |     |   complex_value pairs to follow (same as properties)
-                repeated uint64 properties = 5 [ packed = true ];
+                // map          |  9  | value is the number of sub-attributes to follow:
+                //              |     |   each item is an index into layer.attribute_pool.keys
+                //              |     |   followed by a complex_value for the value
+                repeated uint64 inline_attributes = 5 [ packed = true ];
+        }
+
+        message AttributePool {
+                repeated string keys = 1;
+
+                repeated string string_values = 2;
+                repeated float float_values = 3 [ packed = true ];
+                repeated double double_values = 4 [ packed = true ];
+                repeated sfixed64 signed_integer_values = 5 [ packed = true ];
+                repeated fixed64 unsigned_integer_values = 6 [ packed = true ];
         }
 
         // Layers are described in section 4.1 of the specification
@@ -112,11 +120,7 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
 
-                repeated string string_values = 7;
-                repeated double double_values = 8 [ packed = true ];
-                repeated float float_values = 9 [ packed = true ];
-                repeated sfixed64 sfixed64_values = 10 [ packed = true ];
-                repeated fixed64 fixed64_values = 11 [ packed = true ];
+                optional AttributePool attribute_pool = 7;
 
                 extensions 16 to max;
         }
