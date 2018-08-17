@@ -84,6 +84,12 @@ message Tile {
                 // map          |  9  | value is the number of sub-attributes to follow:
                 //              |     |   each item is an index into layer.attribute_pool.keys
                 //              |     |   followed by a complex_value for the value
+                //
+                // Value types 10 through 15 are reserved for definition in future versions
+                // of this specification. Implementations MUST treat complex_values of these
+                // types as opaque values that are not followed by additional sub-attributes.
+                // In the future they may refer to additional inline types or additional
+                // reference types.
                 repeated uint64 inline_attributes = 5 [ packed = true ];
         }
 
