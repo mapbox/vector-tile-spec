@@ -60,7 +60,9 @@ A feature MUST contain a `geometry` field.
 
 A feature MUST contain a `type` field as described in the Geometry Types section.
 
-A feature MAY contain a `tags` field. Feature-level metadata, if any, SHOULD be stored in the `tags` field.
+A feature MUST NOT contain a `tags` field. It exists for backwards compatibility only.
+
+A feature MAY contain an `attributes` field. Feature-level metadata, if any, MUST be stored in this `attributes` field.
 
 A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty. 
 
@@ -383,7 +385,32 @@ This polygon would be encoded with the following set of commands:
 
 ### 4.4. Feature Attributes
 
-Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
+Feature attributes are encoded as a series of integers in the `attributes` field of a feature. Integers usually come in pairs (but see below). The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with possibly more integers) represent the value of the attribute, it is called a "complex value". Every key index MUST be unique within that feature such that no other attribute within that feature has the same key index. A feature `attributes` field MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
+
+### 4.4.1 Complex Value Encoding
+
+Each complex value is an 64bit unsigned integer and can be split into two parts: the lowest 4 bits are the type bits, and the remaining bits are the parameter bits. What is stored in the parameter bits is dependent on the contents of the type bits. For inline types, the parameter field simply contains a value. For reference types it is an index position into a value storage of the layer.
+
+    uint64_t type = complex_value & 0x0F; // least significant 4 bits
+    uint64_t parameter = complex_value >> 4;
+
+        Type     | Id  | Parameter
+    ---------------------------------
+    string       |  0  | index into layer string_values
+    float        |  1  | index into layer float_values
+    double       |  2  | index into layer double_values
+    uint         |  3  | index into layer uint_values
+    sint         |  4  | index into layer sint_values
+    inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
+    inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
+    bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
+    list         |  8  | value is the number of elements to follow:
+                 |     |   each item in the list is a complex value
+    map          |  9  | value is the number of elements to follow:
+                 |     |   each pair is an index into layer keys
+                 |     |   followed by a complex_value for the value
+
+Value types 10 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that are not followed by additional sub-attributes. In the future they may refer to additional inline types or additional reference types.
 
 ### 4.5. Example
 
@@ -429,17 +456,17 @@ For example, a GeoJSON feature like:
 Could be structured like:
 
 ```js
-layers {
+ayers {
   version: 2
   name: "points"
   features: {
     id: 1
-    tags: 0
-    tags: 0
-    tags: 1
-    tags: 0
-    tags: 2
-    tags: 1
+    attributes: 0
+    attributes: 0
+    attributes: 1
+    attributes: 0
+    attributes: 2
+    attributes: 2
     type: Point
     geometry: 9
     geometry: 2410
@@ -447,10 +474,10 @@ layers {
   }
   features {
     id: 2
-    tags: 0
-    tags: 2
-    tags: 2
-    tags: 3
+    attributes: 0
+    attributes: 16
+    attributes: 2
+    attributes: 37
     type: Point
     geometry: 9
     geometry: 2410
@@ -459,18 +486,11 @@ layers {
   keys: "hello"
   keys: "h"
   keys: "count"
-  values: {
-    string_value: "world"
+  string_values: {
+    values: "world"
+    values: "again"
   }
-  values: {
-    double_value: 1.23
-  }
-  values: {
-    string_value: "again"
-  }
-  values: {
-    int_value: 2
-  }
+  double_values: 1.23
   extent: 4096
 }
 ```
