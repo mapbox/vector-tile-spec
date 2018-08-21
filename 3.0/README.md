@@ -399,8 +399,8 @@ Each complex value is an 64bit unsigned integer and can be split into two parts:
     string       |  0  | index into layer string_values
     float        |  1  | index into layer float_values
     double       |  2  | index into layer double_values
-    uint         |  3  | index into layer uint_values
-    sint         |  4  | index into layer sint_values
+    uint         |  3  | index into layer int_values
+    sint         |  4  | index into layer int_values (values are zigzag encoded)
     inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
     inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
     bool/null    |  7  | value of 0 = false, 1 = true, 2 = null

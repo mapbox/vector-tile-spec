@@ -80,8 +80,7 @@ message Tile {
                 optional StringValues string_values = 6;
                 repeated float float_values = 7 [ packed = true ];
                 repeated double double_values = 8 [ packed = true ];
-                repeated sfixed64 sint_values = 9 [ packed = true ];
-                repeated fixed64 uint_values = 10 [ packed = true ];
+                repeated fixed64 int_values = 9 [ packed = true ];
 
                 extensions 16 to max;
         }
