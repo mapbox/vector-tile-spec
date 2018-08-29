@@ -456,7 +456,7 @@ For example, a GeoJSON feature like:
 Could be structured like:
 
 ```js
-ayers {
+layers {
   version: 2
   name: "points"
   features: {
