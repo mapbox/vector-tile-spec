@@ -31,11 +31,11 @@ message Tile {
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
 
-                // Tags of this feature are encoded as repeated pairs of
+                // Attributes of this feature are encoded as repeated pairs of
                 // integers.
-                // A detailed description of tags is located in sections
+                // A detailed description of attributes is located in sections
                 // 4.2 and 4.4 of the specification
-                repeated uint32 tags = 2 [ packed = true ];
+                repeated uint32 attributes = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
                 optional GeomType type = 3 [ default = UNKNOWN ];
@@ -44,6 +44,57 @@ message Tile {
                 // A detailed description on geometry encoding is located in 
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
+                
+                // Additional attributes (or all the attributes) of this feature may be
+                // encoded as repeated pairs of 64-bit integers, to take
+                // advantage of inline encoding of small values,
+                // improved compression from use of repeated values,
+                // and support for list and map values.
+                //
+                // This message may only be used if the layer version is >= 3.
+                //
+                // The inline_attributes field is much like the attributes field in that it is a pair of
+                // integers that reference key and value pairs. However, the value reference
+                // is a "complex_value" that combines a type and an index.
+                // 
+                // The "key_index" is much like the key index in the use for attributes, but instead
+                // of pointing into layer.keys, it points into layer.attribute_pool.keys.
+                //
+                // An complex value has two parts: the lowest 4 bits are the type bits,
+                // and the remaining bits are the parameter bits. What is stored in the parameter
+                // bits is dependent on the contents of the type bits. For example for inline values,
+                // the parameter field is not an index but simply a value. For other types it is
+                // an index position into a value storage of the layer.
+                // 
+                // uint64_t type = complex_value & 0x0F; // least significant 4 bits
+                // uint64_t parameter = complex_value >> 4;
+                // 
+                //     Type     | Id  | Parameter
+                // ---------------------------------
+                // string       |  0  | index into layer string_values
+                // float        |  1  | index into layer float_values
+                // double       |  2  | index into layer double_values
+                // uint         |  3  | index into layer int_values
+                // sint         |  4  | index into layer int_values (values are zigzag encoded)
+                // inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
+                // inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
+                // bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
+                // list         |  8  | value is the number of elements to follow:
+                //              |     |   each item in the list is a complex value
+                // map          |  9  | value is the number of pairs of elements to follow:
+                //              |     |   each pair is an index into layer keys
+                //              |     |   followed by a complex_value for the value
+                //
+                // Value types 10 through 15 are reserved for definition in future versions
+                // of this specification. Implementations MUST treat complex_values of these
+                // types as opaque values that are not followed by additional sub-attributes.
+                // In the future they may refer to additional inline types or additional
+                // reference types.
+                repeated uint64 inline_attributes = 5 [ packed = true ];
+        }
+
+        message StringValues {
+                repeated string keys = 1;
         }
 
         // Layers are described in section 4.1 of the specification
@@ -68,6 +119,11 @@ message Tile {
                 // Although this is an "optional" field it is required by the specification.
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
+
+                optional StringValues attribute_pool = 6;
+                repeated float float_values = 7 [ packed = true ];
+                repeated double double_values = 8 [ packed = true ];
+                repeated fixed64 int_values = 9 [ packed = true ];
 
                 extensions 16 to max;
         }
