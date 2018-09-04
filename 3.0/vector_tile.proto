@@ -27,6 +27,39 @@ message Tile {
                 extensions 8 to max;
         }
 
+        enum DimensionType {
+            INTEGER = 0;
+            UNSIGNED_INTEGER = 1;
+            FLOAT = 2;
+            DOUBLE = 3;
+        }
+
+        message DimensionalMapping {
+            required DimensionType type = 1 [ packed = true ];
+            // is_elevation can only be used once for all dimensions in the layer
+            optional bool is_elevation = 2;
+
+            // Formula for values in dimension:
+            // value = global_offset + scale * (delta_encoded_value + offset)
+
+            // Individual offset for this specific tile
+            optional int64 offset =  3;
+            // only used if type == int or unsigned int
+            // if not set for int type then scale = 1 and global_offset = 0
+            optional int64 scale_int = 4;
+            optional int64 global_offset_int = 5;
+            // only used if type == float
+            // if not set for float type then scale = 1.0 and global_offset = 0.0
+            optional float scale_float = 6;
+            optional float global_offset_float = 7;
+            // only used if type == double
+            // if not set for double type then scale = 1.0 and global_offset = 0.0
+            optional double scale_double = 8; 
+            optional double global_offset_double = 9;
+            // Index to keys for name of dimension (optional)
+            optional uint32 key = 10;
+        }
+
         // Features are described in section 4.2 of the specification
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
@@ -44,6 +77,19 @@ message Tile {
                 // A detailed description on geometry encoding is located in 
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
+
+                // Extra dimensional data to add to the geometry.
+                // This is a delta encoded set of values that start at 
+                repeated uint32 extended_geometry = 6 [ packed = true];
+
+                // Contains indexes to attribute data 
+                // if `blake_properties` branch is selcted these would
+                // be a series of inline values instead.
+                // There is expected to be the same number of values as
+                // in geometry, if no value exists for a node, null should
+                // be used.
+                repeated uint64 node_attributes = 7 [ packed = true ];
+
         }
 
         // Layers are described in section 4.1 of the specification
@@ -68,6 +114,11 @@ message Tile {
                 // Although this is an "optional" field it is required by the specification.
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
+                
+                // Describe the number of extra dimensions that will be expected in the 
+                // extended_geometry field of Features. 
+                // The count of DimensionalMappings indicates the number of extra dimensions
+                repeated DimensionalMapping = 8;
 
                 extensions 16 to max;
         }
