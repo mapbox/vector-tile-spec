@@ -66,23 +66,23 @@ message Tile {
                 // the parameter field is not an index but simply a value. For other types it is
                 // an index position into a value storage of the layer.
                 // 
-                // uint64_t type = complex_value & 0x0F; // Bottom 4 bits
+                // uint64_t type = complex_value & 0x0F; // least significant 4 bits
                 // uint64_t parameter = complex_value >> 4;
                 // 
                 //     Type     | Id  | Parameter
                 // ---------------------------------
-                // string       |  0  | index into layer.attribute_pool.string_values
-                // float        |  1  | index into layer.attribute_pool.float_values
-                // double       |  2  | index into layer.attribute_pool.double_values
-                // int          |  3  | index into layer.attribute_pool.signed_integer_values
-                // uint         |  4  | index into layer.attribute_pool.unsigned_integer_values
+                // string       |  0  | index into layer string_values
+                // float        |  1  | index into layer float_values
+                // double       |  2  | index into layer double_values
+                // uint         |  3  | index into layer int_values
+                // sint         |  4  | index into layer int_values (values are zigzag encoded)
                 // inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
                 // inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
                 // bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
-                // list         |  8  | value is the number of sub-attributes to follow:
+                // list         |  8  | value is the number of elements to follow:
                 //              |     |   each item in the list is a complex value
-                // map          |  9  | value is the number of pairs of sub-attributes to follow:
-                //              |     |   each pair is an index into layer.attribute_pool.keys
+                // map          |  9  | value is the number of pairs of elements to follow:
+                //              |     |   each pair is an index into layer keys
                 //              |     |   followed by a complex_value for the value
                 //
                 // Value types 10 through 15 are reserved for definition in future versions
@@ -93,14 +93,8 @@ message Tile {
                 repeated uint64 inline_attributes = 5 [ packed = true ];
         }
 
-        message AttributePool {
+        message StringValues {
                 repeated string keys = 1;
-
-                repeated string string_values = 2;
-                repeated float float_values = 3 [ packed = true ];
-                repeated double double_values = 4 [ packed = true ];
-                repeated sfixed64 signed_integer_values = 5 [ packed = true ];
-                repeated fixed64 unsigned_integer_values = 6 [ packed = true ];
         }
 
         // Layers are described in section 4.1 of the specification
@@ -126,7 +120,10 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
 
-                optional AttributePool attribute_pool = 7;
+                optional StringValues attribute_pool = 6;
+                repeated float float_values = 7 [ packed = true ];
+                repeated double double_values = 8 [ packed = true ];
+                repeated fixed64 int_values = 9 [ packed = true ];
 
                 extensions 16 to max;
         }
