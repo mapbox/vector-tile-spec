@@ -83,6 +83,18 @@ message Tile {
 
                 // Extra dimensional data to add to the geometry.
                 // This is a delta encoded set of values that start at 
+                // global_offset_*, with each integer increment
+                // incrementing by scale_*.
+                //
+                // The least-significant bit distinguishes between
+                // increments and nulls:
+                //
+                //  0: the remaining bits are the increment.
+                //  1: this node has no data for this dimension.
+                //
+                // The first increment after a null is given relative
+                // to the last non-null value, or to global_offset_*
+                // if there was no previous value.
                 repeated uint32 extended_geometry = 6 [ packed = true];
 
                 // Contains indexes to attribute data 
