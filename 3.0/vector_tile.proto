@@ -95,14 +95,28 @@ message Tile {
                 // The first increment after a null is given relative
                 // to the last non-null value, or to global_offset_*
                 // if there was no previous value.
+                //
+                // There is one `extended_geometry` element per
+                // DimensionalMapping per `moveto` or `lineto` in the
+                // `geometry`. If there are multiple DimensionalMappings,
+                // all the dimensions for each `moveto` or `lineto` are
+                // given in sequence before moving on to the dimensions
+                // for the next `moveto` or `lineto`.
                 repeated uint32 extended_geometry = 6 [ packed = true];
 
-                // Contains indexes to attribute data 
-                // if `blake_properties` branch is selcted these would
-                // be a series of inline values instead.
-                // There is expected to be the same number of values as
-                // in geometry, if no value exists for a node, null should
-                // be used.
+                // Contains indexes into the `values` array for an additional
+                // non-geometric attribute per node. Although not strictly
+                // required, the attribute value for each node will typically
+                // be of `map` type, giving the additional data for each node
+                // as a set of key-value pairs.
+                //
+                // There are expected to be the same number of value references
+                // here as there are `moveto` or `lineto` operations in `geometry`.
+                // If no value exists for a node, a null value should be used.
+                //
+                // If the `blake_properties` branch is selected, these would
+                // be a series of `complex_attributes` instead of `values`
+                // references.
                 repeated uint64 node_attributes = 7 [ packed = true ];
 
         }
