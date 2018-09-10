@@ -33,7 +33,7 @@ message Tile {
             DOUBLE = 3;
         }
 
-        message DimensionalMapping {
+        message Dimension {
             required DimensionType type = 1 [ packed = true ];
             // is_elevation can only be used once for all dimensions in the layer
             optional bool is_elevation = 2;
@@ -146,8 +146,8 @@ message Tile {
                 
                 // Describe the number of extra dimensions that will be expected in the 
                 // extended_geometry field of Features. 
-                // The count of DimensionalMappings indicates the number of extra dimensions
-                repeated DimensionalMapping = 8;
+                // The count of Dimension indicates the number of extra dimensions
+                repeated Dimension dimension_map = 8;
 
                 repeated string string_values = 6;
 
