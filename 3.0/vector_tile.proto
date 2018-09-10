@@ -45,7 +45,7 @@ message Tile {
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
                 
-                // A string as a unique indentifier for the Feature
+                // A string as a unique identifier for the Feature
                 optional string string_id = 10;
         }
 
