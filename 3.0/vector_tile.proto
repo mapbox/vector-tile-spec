@@ -29,13 +29,11 @@ message Tile {
 
         enum DimensionType {
             INTEGER = 0;
-            UNSIGNED_INTEGER = 1;
-            FLOAT = 2;
-            DOUBLE = 3;
+            DOUBLE = 1;
         }
 
         message Dimension {
-            required DimensionType type = 1 [ packed = true ];
+            required DimensionType type = 1;
             // is_elevation can only be used once for all dimensions in the layer
             optional bool is_elevation = 2;
 
@@ -48,16 +46,12 @@ message Tile {
             // if not set for int type then scale = 1 and global_offset = 0
             optional int64 scale_int = 4;
             optional int64 global_offset_int = 5;
-            // only used if type == float
-            // if not set for float type then scale = 1.0 and global_offset = 0.0
-            optional float scale_float = 6;
-            optional float global_offset_float = 7;
             // only used if type == double
             // if not set for double type then scale = 1.0 and global_offset = 0.0
             optional double scale_double = 8; 
             optional double global_offset_double = 9;
             // Index to keys for name of dimension (optional)
-            optional uint32 key = 10;
+            optional string name = 10;
         }
 
         // Features are described in section 4.2 of the specification
