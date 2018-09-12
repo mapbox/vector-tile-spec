@@ -35,7 +35,7 @@ message Tile {
                 // integers.
                 // A detailed description of attributes is located in sections
                 // 4.2 and 4.4 of the specification
-                repeated uint32 attributes = 2 [ packed = true ];
+                repeated uint32 tags = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
                 optional GeomType type = 3 [ default = UNKNOWN ];
@@ -93,10 +93,6 @@ message Tile {
                 repeated uint64 inline_attributes = 5 [ packed = true ];
         }
 
-        message StringValues {
-                repeated string keys = 1;
-        }
-
         // Layers are described in section 4.1 of the specification
         message Layer {
                 // Any compliant implementation must first read the version
@@ -120,7 +116,7 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
 
-                optional StringValues attribute_pool = 6;
+                repeated string string_values = 6;
                 repeated float float_values = 7 [ packed = true ];
                 repeated double double_values = 8 [ packed = true ];
                 repeated fixed64 int_values = 9 [ packed = true ];
