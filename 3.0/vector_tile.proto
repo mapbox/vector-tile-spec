@@ -139,7 +139,7 @@ message Tile {
                 // Describe the number of extra dimensions that will be expected in the 
                 // extended_geometry field of Features. 
                 // The count of Dimension indicates the number of extra dimensions
-                repeated Dimension dimension_map = 8;
+                repeated Dimension dimension_map = 10;
 
                 repeated string string_values = 6;
 
