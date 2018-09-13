@@ -35,17 +35,17 @@ message Tile {
             // value = global_offset + scale * (delta_encoded_value + offset)
 
             // Individual offset for this specific tile
-            optional int64 offset = 3;
+            optional sint64 offset = 3;
 
             // Only one of scale_int or scale_double may appear.
             // If neither scale_int nor scale_double appears, scale = 1.0.
-            optional int64 scale_int = 4;
+            optional sint64 scale_int = 4;
             optional double scale_double = 8; 
 
             // Only one of global_offset_int or global_offset_double may appear.
             // If neither global_offset_int nor global_offset_double appears,
             // global_offset = 0.0.
-            optional int64 global_offset_int = 5;
+            optional sint64 global_offset_int = 5;
             optional double global_offset_double = 9;
 
             // Index to keys for name of dimension (optional)
