@@ -11,7 +11,6 @@ message Tile {
              LINESTRING = 2;
              POLYGON = 3;
              CURVE = 4;    // like a LineString, but a spline
-             AREA = 5;     // like a Polygon, but a spline
         }
 
         // Variant type encoding
