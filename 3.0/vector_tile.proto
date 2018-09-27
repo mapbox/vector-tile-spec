@@ -26,29 +26,67 @@ message Tile {
                 extensions 8 to max;
         }
 
-        message Dimension {
-            // is_elevation can only be used once for all dimensions in the layer
-            optional bool is_elevation = 2;
+        message Scaling {
+                // Formula for values in dimension:
+                // value = global_offset + scale * (delta_encoded_value + offset)
 
-            // Formula for values in dimension:
-            // value = global_offset + scale * (delta_encoded_value + offset)
+                // Individual offset for this specific tile
+                optional sint64 offset = 1;
 
-            // Individual offset for this specific tile
-            optional sint64 offset = 3;
+                // Only one of scale_int or scale_double may appear.
+                // If neither scale_int nor scale_double appears, scale = 1.0.
+                optional sint64 scale_int = 2;
+                optional double scale_double = 3; 
 
-            // Only one of scale_int or scale_double may appear.
-            // If neither scale_int nor scale_double appears, scale = 1.0.
-            optional sint64 scale_int = 4;
-            optional double scale_double = 8; 
+                // Only one of global_offset_int or global_offset_double may appear.
+                // If neither global_offset_int nor global_offset_double appears,
+                // global_offset = 0.0.
+                optional sint64 global_offset_int = 4;
+                optional double global_offset_double = 5;
+        }
 
-            // Only one of global_offset_int or global_offset_double may appear.
-            // If neither global_offset_int nor global_offset_double appears,
-            // global_offset = 0.0.
-            optional sint64 global_offset_int = 5;
-            optional double global_offset_double = 9;
+        message PerNodeAttribute {
+            
+                optional string name = 1;
 
-            // Index to keys for name of dimension (optional)
-            optional string name = 10;
+                // Can either use attributes or delta_attributes
+                // but not both!
+
+                // Attributes are a series of attributes for each node (point)
+                // in the geometry and use complex_values (see PR on this)
+                // for each value.
+                repeated int64 attributes = 2;
+                
+                // Delta attributes are used for higher levels of compression
+                // for floating point or integer data via delta encoding.
+                //
+                // The first value in a delta attribute is special as it provides
+                // information about possible scaling of the delta attribute!
+                // This value can be decoded as follows:
+                // 
+                // uint64_t type = first_value & 0x03; // least significant 2 bits
+                // uint64_t index = first_value >> 2;
+                // 
+                // The type is used to determine the output type:
+                // 0 - no scaling (ignore index value)
+                // 1 - integer scaling
+                // 2 - double scaling
+                //
+                // The index highlights what `scaling` message to use if any from
+                // the feature's layer. This scaling will be applied after a value
+                // is retrieved from the delta encoding.
+                //
+                // All following values after the first value in delta_attributes
+                // as nullable_deltas:
+                //
+                // A nullable delta can be decoded as follows:
+                //
+                // bool null = nullable_delta & 1;
+                // uint64_t delta = nullable_delta >> 1;
+                //
+                // If the value is null, no delta is applied and the cursor does
+                // not move.
+                repeated int64 delta_attributes = 3;
         }
 
         // Features are described in section 4.2 of the specification
@@ -65,52 +103,21 @@ message Tile {
                 // A detailed description on geometry encoding is located in 
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
-
+                
                 // Attributes of this feature in a special inline encoding. See
                 // the spec for details.
                 repeated uint64 attributes = 5 [ packed = true ];
                 
+                // 3d dimension is a delta encoded series of integer values 
+                // for each point in geometry that start at 0.
+                // These values are scaled as necessary using the feature's
+                // elevation_scaling values. 
+                repeated uint32 elevation = 6 [ packed = true];
+                
+                repeated PerNodeAttribute node_attributes = 7;
+                
                 // A string as a unique identifier for the Feature
                 optional string string_id = 10;
-
-                // Extra dimensional data to add to the geometry.
-                // This is a delta encoded set of values that start at 
-                // global_offset_*, with each integer increment
-                // incrementing by scale_*.
-                //
-                // The least-significant bit distinguishes between
-                // increments and nulls:
-                //
-                //  0: the remaining bits are the increment.
-                //  1: this node has no data for this dimension.
-                //
-                // The first increment after a null is given relative
-                // to the last non-null value, or to global_offset_*
-                // if there was no previous value.
-                //
-                // There is one `extended_geometry` element per
-                // DimensionalMapping per `moveto` or `lineto` in the
-                // `geometry`. If there are multiple DimensionalMappings,
-                // all the dimensions for each `moveto` or `lineto` are
-                // given in sequence before moving on to the dimensions
-                // for the next `moveto` or `lineto`.
-                repeated uint32 extended_geometry = 6 [ packed = true];
-
-                // Contains indexes into the `values` array for an additional
-                // non-geometric attribute per node. Although not strictly
-                // required, the attribute value for each node will typically
-                // be of `map` type, giving the additional data for each node
-                // as a set of key-value pairs.
-                //
-                // There are expected to be the same number of value references
-                // here as there are `moveto` or `lineto` operations in `geometry`.
-                // If no value exists for a node, a null value should be used.
-                //
-                // If the `blake_properties` branch is selected, these would
-                // be a series of `complex_attributes` instead of `values`
-                // references.
-                repeated uint64 node_attributes = 7 [ packed = true ];
-
         }
 
         // Layers are described in section 4.1 of the specification
@@ -136,10 +143,10 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
                 
-                // Describe the number of extra dimensions that will be expected in the 
-                // extended_geometry field of Features. 
-                // The count of Dimension indicates the number of extra dimensions
-                repeated Dimension dimension_map = 10;
+                optional Scaling elevation_scaling = 10;
+                
+                // Accessed by index in order of layer here.
+                repeated Scaling attribute_scalings = 11;
 
                 repeated string string_values = 6;
 
