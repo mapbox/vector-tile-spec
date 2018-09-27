@@ -54,10 +54,7 @@ A feature MUST contain a `geometry` field.
 
 A feature MUST contain a `type` field as described in the Geometry Types section.
 
-A feature SHOULD NOT contain a `tags` field. It exists for backwards compatiability, but 
-A feature MUST NOT contain a `tags` field. It exists for backwards compatibility only.
-
-A feature MAY contain an `attributes` field. Feature-level metadata, if any, MUST be stored in this `attributes` field.
+A feature stores its attributes either in the `tags` field or the `attributes` field. Please see section 4.4 for the rules governing these fields.
 
 A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty. 
 
