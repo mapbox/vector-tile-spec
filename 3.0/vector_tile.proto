@@ -46,8 +46,8 @@ message Tile {
         }
 
         message PerNodeAttribute {
-            
-                optional string name = 1;
+                // Reference into the layer's keys table
+                optional uint32 name = 1;
 
                 // Can either use attributes or delta_attributes
                 // but not both!
