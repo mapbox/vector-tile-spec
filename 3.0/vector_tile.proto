@@ -52,41 +52,27 @@ message Tile {
                 // Can either use attributes or delta_attributes
                 // but not both!
 
-                // Attributes are a series of attributes for each node (point)
+                // Attributes are a series of attributes for each moveto or lineto (point)
                 // in the geometry and use complex_values (see PR on this)
                 // for each value.
-                repeated int64 attributes = 2;
+                repeated uint64 attributes = 2;
                 
-                // Delta attributes are used for higher levels of compression
-                // for floating point or integer data via delta encoding.
-                //
-                // The first value in a delta attribute is special as it provides
-                // information about possible scaling of the delta attribute!
-                // This value can be decoded as follows:
-                // 
-                // uint64_t type = first_value & 0x03; // least significant 2 bits
-                // uint64_t index = first_value >> 2;
-                // 
-                // The type is used to determine the output type:
-                // 0 - no scaling (ignore index value)
-                // 1 - integer scaling
-                // 2 - double scaling
-                //
-                // The index highlights what `scaling` message to use if any from
+                // The index highlights which `scaling` message to use, if any, from
                 // the feature's layer. This scaling will be applied after a value
                 // is retrieved from the delta encoding.
-                //
-                // All following values after the first value in delta_attributes
-                // as nullable_deltas:
+                optional uint64 scaling_index = 3;
+
+                // The values in delta_attributes are nullable_deltas, one per
+                // moveto or lineto in the geometry.
                 //
                 // A nullable delta can be decoded as follows:
                 //
                 // bool null = nullable_delta & 1;
-                // uint64_t delta = nullable_delta >> 1;
+                // sint64_t delta = decode_zigazag64(nullable_delta >> 1);
                 //
                 // If the value is null, no delta is applied and the cursor does
                 // not move.
-                repeated int64 delta_attributes = 3;
+                repeated uint64 delta_attributes = 4;
         }
 
         // Features are described in section 4.2 of the specification
@@ -108,12 +94,11 @@ message Tile {
                 // the spec for details.
                 repeated uint64 attributes = 5 [ packed = true ];
                 
-                // 3d dimension is a delta encoded series of integer values 
-                // for each point in geometry that start at 0.
-                // These values are scaled as necessary using the feature's
-                // elevation_scaling values. 
-                repeated uint32 elevation = 6 [ packed = true];
-                
+                // for each moveto or lineto in geometry.
+                // These values are scaled and offset using the layer's
+                // elevation_scaling values.
+                repeated sint64 elevation = 6 [ packed = true];
+
                 repeated PerNodeAttribute node_attributes = 7;
                 
                 // A string as a unique identifier for the Feature
