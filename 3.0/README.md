@@ -423,6 +423,10 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
     map          |  9  | value is the number of key-value pairs to follow:
                  |     |   each pair is an index into layer keys
                  |     |   followed by a complex_value for the value
+    list         | 10  | value is the number of list items to follow:
+      of doubles |     |   first value provides index of attributes_scaling
+                 |     |   to use, followed by the listed number of delta
+                 |     |   encoded integers that follow.
 
 Note that the complex_values that follow a list or map may themselves contain lists or maps.
 

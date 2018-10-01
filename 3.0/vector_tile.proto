@@ -33,46 +33,11 @@ message Tile {
                 // Individual offset for this specific tile
                 optional sint64 offset = 1;
 
-                // Only one of scale_int or scale_double may appear.
-                // If neither scale_int nor scale_double appears, scale = 1.0.
-                optional sint64 scale_int = 2;
-                optional double scale_double = 3; 
+                // If not set assumed to be scale_double 1.0.
+                optional double scale = 2; 
 
-                // Only one of global_offset_int or global_offset_double may appear.
-                // If neither global_offset_int nor global_offset_double appears,
-                // global_offset = 0.0.
-                optional sint64 global_offset_int = 4;
-                optional double global_offset_double = 5;
-        }
-
-        message PerNodeAttribute {
-                // Reference into the layer's keys table
-                optional uint32 name = 1;
-
-                // Can either use attributes or delta_attributes
-                // but not both!
-
-                // Attributes are a series of attributes for each moveto or lineto (point)
-                // in the geometry and use complex_values (see PR on this)
-                // for each value.
-                repeated uint64 attributes = 2;
-                
-                // The index highlights which `scaling` message to use, if any, from
-                // the feature's layer. This scaling will be applied after a value
-                // is retrieved from the delta encoding.
-                optional uint64 scaling_index = 3;
-
-                // The values in delta_attributes are nullable_deltas, one per
-                // moveto or lineto in the geometry.
-                //
-                // A nullable delta can be decoded as follows:
-                //
-                // bool null = nullable_delta & 1;
-                // sint64_t delta = decode_zigazag64(nullable_delta >> 1);
-                //
-                // If the value is null, no delta is applied and the cursor does
-                // not move.
-                repeated uint64 delta_attributes = 4;
+                // If not set assumed to be 0.0
+                optional double global_offset = 3;
         }
 
         // Features are described in section 4.2 of the specification
@@ -99,8 +64,6 @@ message Tile {
                 // elevation_scaling values.
                 repeated sint64 elevation = 6 [ packed = true];
 
-                repeated PerNodeAttribute node_attributes = 7;
-                
                 // A string as a unique identifier for the Feature
                 optional string string_id = 10;
         }
@@ -128,11 +91,6 @@ message Tile {
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
                 
-                optional Scaling elevation_scaling = 10;
-                
-                // Accessed by index in order of layer here.
-                repeated Scaling attribute_scalings = 11;
-
                 repeated string string_values = 6;
 
                 repeated float float_values = 7 [ packed = true ];
@@ -140,6 +98,12 @@ message Tile {
                 repeated double double_values = 8 [ packed = true ];
 
                 repeated fixed64 int_values = 9 [ packed = true ];
+                
+                optional Scaling elevation_scaling = 10;
+                
+                // Accessed by index in order of layer here.
+                repeated Scaling attribute_scalings = 11;
+
 
                 extensions 16 to max;
         }
