@@ -42,17 +42,12 @@ A layer MUST contain a `version` field with the major version number of the Vect
 
 A layer MUST contain a `name` field. A Vector Tile MUST NOT contain two or more layers whose `name` values are byte-for-byte identical. Prior to appending a layer to an existing Vector Tile, an encoder MUST check the existing `name` fields in order to prevent duplication.
 
-Each feature in a layer (see below) may have one or more key-value pairs as its metadata. The keys and values are indices into two lists, `keys` and `values`, that are shared across the layer's features.
-
-Each element in the `keys` field of the layer is a string. The `keys` include all the keys of features used in the layer, and each key may be referenced by its positional index in this set of `keys`, with the first key having an index of 0. The set of `keys` SHOULD NOT contain two or more values which are byte-for-byte identical.
-
-Each element in the `values` field of the layer encodes a value of any of several types (see below). The `values` represent all the values of features used in the layer, and each value may be referenced by its positional index in this set of `values`, with the first value having an index of 0. The set of `values` SHOULD NOT contain two or more values of the same type which are byte-for-byte identical.
-
-In order to support values of varying string, boolean, integer, and floating point types, the protobuf encoding of the `value` field consists of a set of `optional` fields. A value MUST contain exactly one of these optional fields.
-
 A layer MUST contain an `extent` that describes the width and height of the tile in integer coordinates. The geometries within the Vector Tile MAY extend past the bounds of the tile's area as defined by the `extent`. Geometries that extend past the tile's area as defined by `extent` are often used as a buffer for rendering features that overlap multiple adjacent tiles.
 
 For example, if a tile has an `extent` of 4096, coordinate units within the tile refer to 1/4096th of its square dimensions. A coordinate of 0 is on the top or left edge of the tile, and a coordinate of 4096 is on the bottom or right edge. Coordinates from 1 through 4095 inclusive are fully within the extent of the tile, and coordinates less than 0 or greater than 4096 are fully outside the extent of the tile.  A point at `(1,10)` or `(4095,10)` is within the extent of the tile. A point at `(0,10)` or `(4096,10)` is on the edge of the extent. A point at `(-1,10)` or `(4097,10)` is outside the extent of the tile.
+
+Each feature in a layer (see below) may have one or more key-value pairs as its metadata.
+The fields of `keys`, `values`, `string_values`, `float_values`, `double_values`, and `int_values` are all governed by the type of attribute encoding used. Please reference section 4.4 for all specific rules governing these fields.
 
 ### 4.2. Features
 
@@ -60,7 +55,7 @@ A feature MUST contain a `geometry` field.
 
 A feature MUST contain a `type` field as described in the Geometry Types section.
 
-A feature MAY contain a `tags` field. Feature-level metadata, if any, SHOULD be stored in the `tags` field.
+A feature stores its attributes either in the `tags` field or the `attributes` field. Please see section 4.4 for the rules governing these fields.
 
 A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty. 
 
@@ -383,7 +378,63 @@ This polygon would be encoded with the following set of commands:
 
 ### 4.4. Feature Attributes
 
-Feature attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Every key index MUST be unique within that feature such that no other attribute pair within that feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
+There are two different ways that feature attributes MAY be encoded within a `layer`. In this document the first way shall be defined as Legacy Attributes and the second as Inline Attributes.  Any single `layer` MUST NOT use both Inline and Legacy Attributes. Both of these forms of attributes are considered valid and a decoder of Vector Tiles MUST support both versions. A valid encoder MAY use either of the forms of attributes but SHOULD prefer the use of Inline Attributes. Legacy Attributes are considered obsolescent and the use of Inline Attributes is encouraged.
+
+#### 4.4.1 Legacy Attributes
+
+Legacy attributes are the way in which attribute data was encoded in Vector Tiles in version 2 and below. They are still current supported as a valid way to encode Attributes, but lack some of the features that are available with Inline Attributes.
+Legacy Attributes use of the `keys` and `values` fields in a `layer` and the `tags` field in a `feature`. If Legacy Attributes are used, the `string_values`, `float_values`, `double_values`, and `int_values` in a `layer` and the `attributes` field in a `feature` MUST NOT be used.
+
+Legacy attributes are encoded as pairs of integers in the `tag` field of a feature. The first integer in each pair represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer in each pair represents the zero-based index of the value in the `values` set of the `layer` to which the feature belongs. Each key index MUST be unique within each feature, such that no other attribute pair within the same feature has the same key index. A feature MUST have an even number of `tag` fields. A feature `tag` field MUST NOT contain a key index or value index greater than or equal to the number of elements in the layer's `keys` or `values` set, respectively.
+
+##### 4.4.1.1 Legacy Attribute Values
+
+When using Legacy Attributes, values are stored as repeated Value messages in the `values` field of a layer and will be referenced by index in a Feature. Each element in the `values` field of the layer encodes a value of any of several types (see below). The `values` represent all the values of features used in the layer, and each value may be referenced by its positional index in this set of `values`, with the first value having an index of 0. The set of `values` SHOULD NOT contain two or more values of the same type which are byte-for-byte identical.
+
+In order to support values of varying string, boolean, integer, and floating point types, the protobuf encoding of the `value` field consists of a set of `optional` fields. A value MUST contain exactly one of these optional fields.
+
+#### 4.4.1.2 Legacy Attribute Keys
+
+The keys for Legacy Attributes are stored in the Layer and follow the rules in section 4.4.3.
+
+#### 4.4.2  Inline Attributes
+
+Feature attributes are encoded as a series of integers in the `attributes` field of a feature. Integers come in tuples that are usually pairs (but see below for the cases where more than two integers are required). The first integer in each tuple represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with 0 or more integers that follow, depending upon the value's type) represents the value of the attribute, and is referred to as a "complex value". Each key index MUST be unique within each feature, such that no other attribute within the same feature has the same key index. The `attributes` field of a feature MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
+
+##### 4.4.2.1 Complex Value Encoding
+
+Each complex value begins with a 64-bit unsigned integer, which can be split into two parts: the lowest 4 bits are the type bits, and the remaining bits are the parameter bits. What is stored in the parameter bits is dependent on the contents of the type bits. For inline types, the parameter field simply contains a value. For reference types the parameter field is an index position into one of the layer's value fields.
+
+    uint64_t type = complex_value & 0x0F; // least significant 4 bits
+    uint64_t parameter = complex_value >> 4;
+
+        Type     | Id  | Parameter
+    ---------------------------------
+    string       |  0  | index into layer string_values
+    float        |  1  | index into layer float_values
+    double       |  2  | index into layer double_values
+    uint         |  3  | index into layer int_values
+    sint         |  4  | index into layer int_values (values are zigzag encoded)
+    inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
+    inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
+    bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
+    list         |  8  | value is the number of list items to follow:
+                 |     |   each item in the list is a complex value
+    map          |  9  | value is the number of key-value pairs to follow:
+                 |     |   each pair is an index into layer keys
+                 |     |   followed by a complex_value for the value
+
+Note that the complex_values that follow a list or map may themselves contain lists or maps.
+
+Value types 10 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
+
+##### 4.4.2.2 Inline Attribute Keys
+
+The keys for Legacy Attributes are stored in the Layer and follow the rules in section 4.4.3.
+
+#### 4.4.3 Attribute Keys
+
+For both Inline and Legacy Attributes, the keys are stored in the Layer's `keys` field and are referenced via an index of their sequence in the Layer.  Each element in the `keys` field of the layer is a string. The `keys` include all the keys of features used in the layer, and each key may be referenced by its positional index in this set of `keys`, with the first key having an index of 0. The set of `keys` SHOULD NOT contain two or more values which are byte-for-byte identical.
 
 ### 4.5. Example
 
@@ -434,12 +485,12 @@ layers {
   name: "points"
   features: {
     id: 1
-    tags: 0
-    tags: 0
-    tags: 1
-    tags: 0
-    tags: 2
-    tags: 1
+    attributes: 0
+    attributes: 0
+    attributes: 1
+    attributes: 0
+    attributes: 2
+    attributes: 2
     type: Point
     geometry: 9
     geometry: 2410
@@ -447,10 +498,10 @@ layers {
   }
   features {
     id: 2
-    tags: 0
-    tags: 2
-    tags: 2
-    tags: 3
+    attributes: 0
+    attributes: 16
+    attributes: 2
+    attributes: 37
     type: Point
     geometry: 9
     geometry: 2410
@@ -459,18 +510,11 @@ layers {
   keys: "hello"
   keys: "h"
   keys: "count"
-  values: {
-    string_value: "world"
+  string_values: {
+    values: "world"
+    values: "again"
   }
-  values: {
-    double_value: 1.23
-  }
-  values: {
-    string_value: "again"
-  }
-  values: {
-    int_value: 2
-  }
+  double_values: 1.23
   extent: 4096
 }
 ```
