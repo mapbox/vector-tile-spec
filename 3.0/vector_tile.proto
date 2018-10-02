@@ -25,7 +25,18 @@ message Tile {
                 optional sint64 sint_value = 6;
                 optional bool bool_value = 7;
 
-                extensions 8 to max;
+                // These changes should be moved to the 3.0 dir, but leaving it here for now
+                // to make it easier to compare with the previous version
+
+                // A list of key-value pairs. Just like Feature's "tags", the repeated pairs
+                // of integers point to Layer's "keys" (odd int) and "values" (even int) array.
+                repeated uint32 object_value = 8 [ packed = true ];
+
+                // An array of values. Similar to Feature's "tags", each integer represents
+                // an index of the Layer's "values" array.
+                repeated uint32 list_value = 9 [ packed = true ];
+
+                extensions 10 to max;
         }
 
         // Features are described in section 4.2 of the specification
