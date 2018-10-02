@@ -55,7 +55,7 @@ A feature MUST contain a `geometry` field.
 
 A feature MUST contain a `type` field as described in the Geometry Types section.
 
-A feature stores its attributes either in the `tags` field or the `attributes` field. Please see section 4.4 for the rules governing these fields.
+A feature stores its attributes either in the `tags` field or in the `attributes` and `geometric_attributes` fields. Please see section 4.4 for the rules governing these fields.
 
 A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty. 
 
@@ -155,7 +155,18 @@ A `ClosePath` command MUST have a command count of 1 and no parameters. The comm
 
 This command does not change the cursor position.
 
-#### 4.3.4. Geometry Types
+#### 4.3.4. Elevations
+
+In addition to the ground locations encoded in the `geometry`, a Feature may also contain elevation data.
+
+If present, the `elevation` message contains one signed integer per moveto, lineto, or closepath in the `geometry`. These integers encode integer elevation steps as deltas from an initial state of 0.
+
+If an `elevation_scaling` message is present in the Layer, these integer elevations are further scaled and offset according to the Scaling rules described below.
+
+Elevations, whether integer or scaled, are interpreted as distances in meters above the WGS84 sphereoid.
+
+
+#### 4.3.5. Geometry Types
 
 The `geometry` field is described in each feature by the `type` field which must be a value in the enum `GeomType`. The following geometry types are supported:
 
@@ -166,17 +177,17 @@ The `geometry` field is described in each feature by the `type` field which must
 
 Geometry collections are not supported.
 
-##### 4.3.4.1. Unknown Geometry Type
+##### 4.3.5.1. Unknown Geometry Type
 
 The specification purposefully leaves an unknown geometry type as an option. This geometry type encodes experimental geometry types that an encoder MAY choose to implement. Decoders MAY ignore any features of this geometry type.
 
-##### 4.3.4.2. Point Geometry Type
+##### 4.3.5.2. Point Geometry Type
 
 The `POINT` geometry type encodes a point or multipoint geometry. The geometry command sequence for a point geometry MUST consist of a single `MoveTo` command with a command count greater than 0.
 
 If the `MoveTo` command for a `POINT` geometry has a command count of 1, then the geometry MUST be interpreted as a single point; otherwise the geometry MUST be interpreted as a multipoint geometry, wherein each pair of `ParameterInteger`s encodes a single point.
 
-##### 4.3.4.3. Linestring Geometry Type
+##### 4.3.5.3. Linestring Geometry Type
 
 The `LINESTRING` geometry type encodes a linestring or multilinestring geometry. The geometry command sequence for a linestring geometry MUST consist of one or more repetitions of the following sequence: 
 
@@ -185,7 +196,7 @@ The `LINESTRING` geometry type encodes a linestring or multilinestring geometry.
 
 If the command sequence for a `LINESTRING` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single linestring; otherwise the geometry MUST be interpreted as a multilinestring geometry, wherein each `MoveTo` signals the beginning of a new linestring.
 
-##### 4.3.4.4. Polygon Geometry Type
+##### 4.3.5.4. Polygon Geometry Type
 
 The `POLYGON` geometry type encodes a polygon or multipolygon geometry, each polygon consisting of exactly one exterior ring that contains zero or more interior rings. The geometry command sequence for a polygon consists of one or more repetitions of the following sequence:
 
@@ -208,9 +219,9 @@ Linear rings MUST be geometric objects that have no anomalous geometric points, 
 
 Polygon geometries MUST NOT have any interior rings that intersect and interior rings MUST be enclosed by the exterior ring.
 
-#### 4.3.5. Example Geometry Encodings
+#### 4.3.6. Example Geometry Encodings
 
-##### 4.3.5.1. Example Point
+##### 4.3.6.1. Example Point
 
 An example encoding of a point located at:
 
@@ -228,7 +239,7 @@ Encoded as: [ 9 50 34 ]
               `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
-##### 4.3.5.2. Example Multi Point
+##### 4.3.6.2. Example Multi Point
 
 An example encoding of two points located at:
 
@@ -251,7 +262,7 @@ Encoded as: [ 17 10 14 3 9 ]
                `> [00010 001] = command id 1 (MoveTo), command count 2
 ```
 
-##### 4.3.5.3. Example Linestring
+##### 4.3.6.3. Example Linestring
 
 An example encoding of a line with the points:
 
@@ -274,7 +285,7 @@ Encoded as: [ 9 4 4 18 0 16 16 0 ]
               `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
-##### 4.3.5.4. Example Multi Linestring
+##### 4.3.6.4. Example Multi Linestring
 
 An example encoding of two lines with the points:
 
@@ -307,7 +318,7 @@ Encoded as: [ 9 4 4 18 0 16 16 0 9 17 17 10 4 8 ]
               `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
-##### 4.3.5.5. Example Polygon
+##### 4.3.6.5. Example Polygon
 
 An example encoding of a polygon feature that has the points:
 
@@ -333,7 +344,7 @@ Encoded as: [ 9 6 12 18 10 12 24 44 15 ]
               `> [00001 001] = command id 1 (MoveTo), command count 1
 ```
 
-##### 4.3.5.6. Example Multi Polygon
+##### 4.3.6.6. Example Multi Polygon
 
 An example of a more complex encoding of two polygons, one with a hole. The position of the points for the polygons are shown below. The winding order of the polygons is VERY important in this example as it signifies the difference between interior rings and a new polygon.
 
@@ -399,9 +410,24 @@ The keys for Legacy Attributes are stored in the Layer and follow the rules in s
 
 #### 4.4.2  Inline Attributes
 
-Feature attributes are encoded as a series of integers in the `attributes` field of a feature. Integers come in tuples that are usually pairs (but see below for the cases where more than two integers are required). The first integer in each tuple represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with 0 or more integers that follow, depending upon the value's type) represents the value of the attribute, and is referred to as a "complex value". Each key index MUST be unique within each feature, such that no other attribute within the same feature has the same key index. The `attributes` field of a feature MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
+Feature attributes are encoded as a series of integers in the `attributes` and `geometric_attributes` fields of a feature. Integers come in tuples that are usually pairs (but see below for the cases where more than two integers are required). The first integer in each tuple represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with 0 or more integers that follow, depending upon the value's type) represents the value of the attribute, and is referred to as a "complex value". Each key index MUST be unique within each feature, such that no other attribute within the same feature has the same key index. The `attributes` and `geometric_attributes` fields of a feature MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
 
-##### 4.4.2.1 Complex Value Encoding
+##### 4.4.2.1 Attributes and geometric attributes
+
+The attributes of a feature are divided between the `attributes` and `geometric_attributes` messages,
+both of which encode a list of key-value pairs.
+
+Feature attributes that describe the overall feature should be encoded in the `attributes` message.
+
+Feature attributes that describe additional characteristics of specific locations along the feature's
+geometry should be encoded in the `geometric_attributes` message.
+
+Each key-value pair in the `geometric_attributes` MUST have a value whose type is `list` or
+`delta-encoded list`, and whose length is the total number of `moveto`, `lineto`, and `closepath`
+commands in the `geometry`. Each element in the list is considered to be associated with the
+corresponding command in the `geometry`.
+
+##### 4.4.2.2 Complex Value Encoding
 
 Each complex value begins with a 64-bit unsigned integer, which can be split into two parts: the lowest 4 bits are the type bits, and the remaining bits are the parameter bits. What is stored in the parameter bits is dependent on the contents of the type bits. For inline types, the parameter field simply contains a value. For reference types the parameter field is an index position into one of the layer's value fields.
 
@@ -423,18 +449,46 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
     map          |  9  | value is the number of key-value pairs to follow:
                  |     |   each pair is an index into layer keys
                  |     |   followed by a complex_value for the value
-    list         | 10  | value is the number of list items to follow:
-      of doubles |     |   first value provides index of attributes_scaling
-                 |     |   to use, followed by the listed number of delta
-                 |     |   encoded integers that follow.
+    delta-       | 10  | parameter is the number of items N in the list:
+      encoded    |     |   one uint64 is an index into the Layer's elevation_scaling
+      list       |     |   followed by N uint64 nullable deltas for the list items
 
 Note that the complex_values that follow a list or map may themselves contain lists or maps.
 
-Value types 10 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
+Value types 11 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
 
-##### 4.4.2.2 Inline Attribute Keys
+##### 4.4.2.3 Inline Attribute Keys
 
 The keys for Legacy Attributes are stored in the Layer and follow the rules in section 4.4.3.
+
+##### 4.4.2.4 Nullable deltas
+
+A delta-encoded list encodes a list, each element of which is either a floating point number or null.
+
+Each encoded value in the list is either 0, indicating null, or a nonzero value that is shifted
+right by one bit and then unzigzagged to produce a signed integer delta:
+
+    sint64 delta = decode_zigzag32(encoding >> 1);
+
+In the case of a null, the current value does not change, and the next delta is relative to the
+previous non-null value. The initial condition to which the first delta is applied is a value of 0.
+
+As indicated above, just prior to the deltas themselves is a uint64 index into the layer's
+`attribute_scalings` list. Each non-null delta-encoded value is further scaled and offset
+by the specified Scaling to produce a final floating point value.
+
+##### 4.4.2.5 Scaling
+
+Elevations and delta-encododed lists are affected by a Scaling specification that maps
+integer inputs to floating point outputs. For a `delta_encoded_value` integer input,
+the final floating point `value` output of Scaling is
+
+    value = base + multiplier * (delta_encoded_value + offset) 
+
+where `base`, `multiplier`, and `offset` are taken from the Scaling.
+
+All of these fields are optional in the Scaling. If not specified, the `base` and `offset`
+are 0 and the `multiplier` is 1.
 
 #### 4.4.3 Attribute Keys
 
@@ -453,7 +507,8 @@ For example, a GeoJSON feature like:
                 "type": "Point",
                 "coordinates": [
                     -8247861.1000836585,
-                    4970241.327215323
+                    4970241.327215323,
+		    6.5
                 ]
             },
             "type": "Feature",
@@ -468,7 +523,8 @@ For example, a GeoJSON feature like:
                 "type": "Point",
                 "coordinates": [
                     -8247861.1000836585,
-                    4970241.327215323
+                    4970241.327215323,
+                    7
                 ]
             },
             "type": "Feature",
@@ -499,6 +555,7 @@ layers {
     geometry: 9
     geometry: 2410
     geometry: 3080
+    elevation: 1
   }
   features {
     id: 2
@@ -510,6 +567,7 @@ layers {
     geometry: 9
     geometry: 2410
     geometry: 3080
+    elevation: 2
   }
   keys: "hello"
   keys: "h"
@@ -519,6 +577,10 @@ layers {
     values: "again"
   }
   double_values: 1.23
+  elevation_scaling: {
+    base = 6
+    multiplier = .5
+  }
   extent: 4096
 }
 ```

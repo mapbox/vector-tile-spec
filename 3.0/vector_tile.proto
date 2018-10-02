@@ -28,16 +28,17 @@ message Tile {
 
         message Scaling {
                 // Formula for values in dimension:
-                // value = global_offset + scale * (delta_encoded_value + offset)
+                // value = base + multiplier * (delta_encoded_value + offset)
 
-                // Individual offset for this specific tile
+                // Offset for deltas in this specific tile.
+                // If not set, offset = 0
                 optional sint64 offset = 1;
 
-                // If not set assumed to be scale_double 1.0.
-                optional double scale = 2; 
+                // If not set, multiplier = 1.0
+                optional double multiplier = 2;
 
-                // If not set assumed to be 0.0
-                optional double global_offset = 3;
+                // If not set, base = 0.0
+                optional double base = 3;
         }
 
         // Features are described in section 4.2 of the specification
@@ -51,18 +52,25 @@ message Tile {
                 optional GeomType type = 3 [ default = UNKNOWN ];
 
                 // Contains a stream of commands and parameters (vertices).
-                // A detailed description on geometry encoding is located in 
+                // A detailed description on geometry encoding is located in
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
-                
+
                 // Attributes of this feature in a special inline encoding. See
                 // the spec for details.
                 repeated uint64 attributes = 5 [ packed = true ];
-                
-                // for each moveto or lineto in geometry.
+
+                // Attributes of this feature that are tied to its geometry.
+                // The value for each key-value pair must be a list type
+                // that contains one element per moveto, lineto, or closepath
+                // in the geometry.
+                repeated uint64 geometric_attributes = 6 [ packed = true ];
+
+                // Delta-encoded elevation for each moveto, lineto, or closepath
+                // in the geometry.
                 // These values are scaled and offset using the layer's
-                // elevation_scaling values.
-                repeated sint64 elevation = 6 [ packed = true];
+                // elevation_scaling, if present.
+                repeated sint64 elevation = 7 [ packed = true];
 
                 // A string as a unique identifier for the Feature
                 optional string string_id = 10;
@@ -90,7 +98,7 @@ message Tile {
                 // Although this is an "optional" field it is required by the specification.
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
-                
+
                 repeated string string_values = 6;
 
                 repeated float float_values = 7 [ packed = true ];
@@ -98,10 +106,11 @@ message Tile {
                 repeated double double_values = 8 [ packed = true ];
 
                 repeated fixed64 int_values = 9 [ packed = true ];
-                
+
                 optional Scaling elevation_scaling = 10;
-                
-                // Accessed by index in order of layer here.
+
+                // Individual feature attributes refer to these Scalings
+                // by their index within this sequence in the Layer.
                 repeated Scaling attribute_scalings = 11;
 
 
