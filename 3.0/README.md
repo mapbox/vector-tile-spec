@@ -165,6 +165,9 @@ If an `elevation_scaling` message is present in the Layer, these integer elevati
 
 Elevations, whether integer or scaled, are interpreted as distances in meters above the WGS84 sphereoid.
 
+Polygon and MultiPolygon features that include elevation data SHOULD declare all points to have
+the same elevation, because the elevation of locations in the interior of a polygon is otherwise
+not sufficiently well defined by the elevation of points on the exterior.
 
 #### 4.3.5. Geometry Types
 
