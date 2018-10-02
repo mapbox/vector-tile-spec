@@ -12,7 +12,9 @@ message Tile {
              POLYGON = 3;
         }
 
-        // Left for backwards compatibility. Not used in version 3.
+        // Variant type encoding
+        // The use of values is described in section 4.4.1 of the specification
+        // Deprecated in version 3.
         message Value {
                 // Exactly one of these values must be present in a valid message
                 optional string string_value = 1;
@@ -30,22 +32,27 @@ message Tile {
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
 
-                // Left for backwards compatibility. Not used in version 3.
+                // Tags of this feature are encoded as repeated pairs of
+                // integers.
+                // A detailed description of tags is located in sections
+                // 4.2 and 4.4 of the specification
+                // Deprecated in version 3. Use attributes instead.
                 repeated uint32 tags = 2 [ packed = true ];
 
                 // The type of geometry stored in this feature.
                 optional GeomType type = 3 [ default = UNKNOWN ];
 
                 // Contains a stream of commands and parameters (vertices).
-                // A detailed description on geometry encoding is located in 
+                // A detailed description on geometry encoding is located in
                 // section 4.3 of the specification.
                 repeated uint32 geometry = 4 [ packed = true ];
 
                 // Attributes of this feature in a special inline encoding. See
-                // the spec for details.
+                // the spec section 4.4.2 for details.
                 repeated uint64 attributes = 5 [ packed = true ];
-                
-                // A string as a unique identifier for the Feature
+
+                // A string as a unique identifier for the Feature. Use either
+                // id or string_id, but not both. See spec section 4.2.
                 optional string string_id = 10;
         }
 
@@ -65,19 +72,28 @@ message Tile {
                 // Dictionary encoding for keys
                 repeated string keys = 3;
 
-                // Left for backwards compatibility. Not used in version 3.
+                // Dictionary encoding for values
+                // Deprecated in version 3.
                 repeated Value values = 4;
 
                 // Although this is an "optional" field it is required by the specification.
                 // See https://github.com/mapbox/vector-tile-spec/issues/47
                 optional uint32 extent = 5 [ default = 4096 ];
 
+                // Table of values of type string. Used for Inline Attributes
+                // in version 3. See spec section 4.4.2 for details.
                 repeated string string_values = 6;
 
+                // Table of values of type float. Used for Inline Attributes
+                // in version 3. See spec section 4.4.2 for details.
                 repeated float float_values = 7 [ packed = true ];
 
+                // Table of values of type double. Used for Inline Attributes
+                // in version 3. See spec section 4.4.2 for details.
                 repeated double double_values = 8 [ packed = true ];
 
+                // Table of values of type integer. Used for Inline Attributes
+                // in version 3. See spec section 4.4.2 for details.
                 repeated fixed64 int_values = 9 [ packed = true ];
 
                 extensions 16 to max;
