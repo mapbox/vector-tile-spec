@@ -468,10 +468,10 @@ The keys for Legacy Attributes are stored in the Layer and follow the rules in s
 
 A delta-encoded list encodes a list, each element of which is either a floating point number or null.
 
-Each encoded value in the list is either 0, indicating null, or a nonzero value that is shifted
-right by one bit and then unzigzagged to produce a signed integer delta:
+Each encoded value in the list is either 0, indicating null, or a nonzero value that is offset
+and then unzigzagged to produce a signed integer delta:
 
-    sint64 delta = decode_zigzag32(encoding >> 1);
+    sint64 delta = decode_zigzag32(encoding - 1);
 
 In the case of a null, the current value does not change, and the next delta is relative to the
 previous non-null value. The initial condition to which the first delta is applied is a value of 0.
