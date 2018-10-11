@@ -161,15 +161,16 @@ This command does not change the cursor position.
 
 In addition to the ground locations encoded in the `geometry`, a Feature may also contain elevation data.
 
-If present, the `elevation` message contains one signed integer per moveto, lineto, or closepath in the `geometry`. These integers encode integer elevation steps as deltas from an initial state of 0.
+If present, the `elevation` message contains one signed integer per `moveto` or `lineto` in the `geometry`. These integers encode integer elevation steps as deltas from an initial state of 0. Note that no `elevation` is specified for `closepath` operations, since the elevation must be the same as the initial point, unlike `geometric_attributes`, where the `closepath` operation does have associated data.
 
 If an `elevation_scaling` message is present in the Layer, these integer elevations are further scaled and offset according to the Scaling rules described below.
 
 Elevations, whether integer or scaled, are interpreted as distances in meters above the WGS84 sphereoid.
 
-Polygon and MultiPolygon features MUST NOT include an `elevation` message, because
+Polygon and MultiPolygon features SHOULD NOT include an `elevation` message, because
 the elevation of locations in the interior of a polygon is not sufficiently well defined
 by the elevation of points on the exterior.
+A future revision of this specification may specify semantics for polygon elevations.
 
 #### 4.3.5. Geometry Types
 
@@ -430,7 +431,8 @@ geometry should be encoded in the `geometric_attributes` message.
 Each key-value pair in the `geometric_attributes` MUST have a value whose type is `list` or
 `delta-encoded list`, and whose length is the total number of `moveto`, `lineto`, and `closepath`
 commands in the `geometry`. Each element in the list is considered to be associated with the
-corresponding command in the `geometry`.
+corresponding command in the `geometry`. Note that the `geometric_attributes` message *does*
+include data for `closepath` operations, unlike `elevation`, which does not.
 
 ##### 4.4.2.2 Complex Value Encoding
 
