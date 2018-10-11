@@ -129,6 +129,9 @@ message Tile {
                 // by their index within this sequence in the Layer.
                 repeated Scaling attribute_scalings = 11;
 
+                optional uint32 tile_x = 12;
+                optional uint32 tile_y = 13;
+                optional uint32 tile_zoom = 14;
 
                 extensions 16 to max;
         }
