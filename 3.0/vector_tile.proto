@@ -28,6 +28,21 @@ message Tile {
                 extensions 8 to max;
         }
 
+        message Scaling {
+                // Formula for values in dimension:
+                // value = base + multiplier * (delta_encoded_value + offset)
+
+                // Offset for deltas in this specific tile.
+                // If not set, offset = 0
+                optional sint64 offset = 1;
+
+                // If not set, multiplier = 1.0
+                optional double multiplier = 2;
+
+                // If not set, base = 0.0
+                optional double base = 3;
+        }
+
         // Features are described in section 4.2 of the specification
         message Feature {
                 optional uint64 id = 1 [ default = 0 ];
@@ -50,6 +65,18 @@ message Tile {
                 // Attributes of this feature in a special inline encoding. See
                 // the spec section 4.4.2 for details.
                 repeated uint64 attributes = 5 [ packed = true ];
+
+                // Attributes of this feature that are tied to its geometry.
+                // The value for each key-value pair must be a list type
+                // that contains one element per moveto, lineto, or closepath
+                // in the geometry.
+                repeated uint64 geometric_attributes = 6 [ packed = true ];
+
+                // Delta-encoded elevation for each moveto, lineto, or closepath
+                // in the geometry.
+                // These values are scaled and offset using the layer's
+                // elevation_scaling, if present.
+                repeated sint64 elevation = 7 [ packed = true];
 
                 // A string as a unique identifier for the Feature. Use either
                 // id or string_id, but not both. See spec section 4.2.
@@ -95,6 +122,13 @@ message Tile {
                 // Table of values of type integer. Used for Inline Attributes
                 // in version 3. See spec section 4.4.2 for details.
                 repeated fixed64 int_values = 9 [ packed = true ];
+
+                optional Scaling elevation_scaling = 10;
+
+                // Individual feature attributes refer to these Scalings
+                // by their index within this sequence in the Layer.
+                repeated Scaling attribute_scalings = 11;
+
 
                 extensions 16 to max;
         }
