@@ -57,7 +57,7 @@ A feature MUST contain a `type` field as described in the Geometry Types section
 
 A feature stores its attributes either in the `tags` field or in the `attributes` and `geometric_attributes` fields. Please see section 4.4 for the rules governing these fields.
 
-A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty. 
+A feature MAY contain an `id` or `string_id` field, but MUST NOT contain both. If a feature has an `id` field, the value of the `id` SHOULD be unique among the features of the parent layer. If a feature has a `string_id` field, the value of the `string_id` SHOULD be unique among the features of the parent layer. Numeric values in the `string_id` are not considered to be the same values as an integer `id` value. A `string_id` that is empty is considered to be the same as not having a `string_id` field, therefore, a `string_id` MUST NOT be empty.
 
 ### 4.3. Geometry Encoding
 
@@ -192,7 +192,7 @@ If the `MoveTo` command for a `POINT` geometry has a command count of 1, then th
 
 ##### 4.3.5.3. Linestring Geometry Type
 
-The `LINESTRING` geometry type encodes a linestring or multilinestring geometry. The geometry command sequence for a linestring geometry MUST consist of one or more repetitions of the following sequence: 
+The `LINESTRING` geometry type encodes a linestring or multilinestring geometry. The geometry command sequence for a linestring geometry MUST consist of one or more repetitions of the following sequence:
 
 1. A `MoveTo` command with a command count of 1
 2. A `LineTo` command with a command count greater than 0
@@ -456,13 +456,13 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
       encoded    |     |   one uint64 is an index into the Layer's elevation_scaling
       list       |     |   followed by N uint64 nullable deltas for the list items
 
-Note that the complex_values that follow a list or map may themselves contain lists or maps.
+Note that the complex values that follow a list or map may themselves contain lists or maps.
 
 Value types 11 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
 
 ##### 4.4.2.3 Inline Attribute Keys
 
-The keys for Legacy Attributes are stored in the Layer and follow the rules in section 4.4.3.
+The keys for Inline Attributes are stored in the Layer and follow the rules in section 4.4.3.
 
 ##### 4.4.2.4 Nullable deltas
 
