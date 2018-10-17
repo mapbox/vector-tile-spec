@@ -76,7 +76,7 @@ message Tile {
                 // in the geometry.
                 // These values are scaled and offset using the layer's
                 // elevation_scaling, if present.
-                repeated sint64 elevation = 7 [ packed = true];
+                repeated sint32 elevation = 7 [ packed = true];
 
                 // A string as a unique identifier for the Feature. Use either
                 // id or string_id, but not both. See spec section 4.2.
