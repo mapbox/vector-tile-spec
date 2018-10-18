@@ -225,6 +225,21 @@ Linear rings MUST be geometric objects that have no anomalous geometric points, 
 
 Polygon geometries MUST NOT have any interior rings that intersect and interior rings MUST be enclosed by the exterior ring.
 
+##### 4.3.5.3. Spline Geometry Type
+
+The `SPLINE` geometry type encodes a curve geometry in the form of a b-spline or basis spline. Unlike other geometry types, `SPLINE` requires the use of multiple fields in a feature. A spline geometry MUST have control points in the `geometry` field and knots in the `spline_knots` field. A spline geometry MAY have a degree in the `spline_degree` field.
+
+If a `SPLINE` geometry does not provide a degree in the `spline_degree` field, the degree is considered to be 2.
+
+The command sequence in the `geometry` field for the control points in a spline geometry MUST consist of one or more repetitions of the following sequence:
+
+1. A `MoveTo` command with a command count of 1
+2. A `LineTo` command with a command count greater than 0
+
+If the command sequence for a `SPLINE` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single b-spline; otherwise the geometry MUST be interpreted as a multi b-spline geometry, wherein each `MoveTo` signals the beginning of a new b-spline.
+
+Each b-spline defined in the `geometry` field MUST have an array of knot values in the `spline_knots` field. Each array of knot values for a b-spline MUST contain exactly the number of knot values as defined by the following formula: `number_of_knots = number_of_control_points + degree + 1`. Knot values are encoded in the `spline_knots` field using delta-encoded-list complex value type as defined in 4.4.2.2 below. There will be delta-encoded-list for each b-spline.
+
 #### 4.3.6. Example Geometry Encodings
 
 ##### 4.3.6.1. Example Point
