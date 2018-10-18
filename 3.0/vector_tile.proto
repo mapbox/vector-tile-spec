@@ -10,6 +10,7 @@ message Tile {
              POINT = 1;
              LINESTRING = 2;
              POLYGON = 3;
+             SPLINE = 4;    // like a LineString, but a spline
         }
 
         // Variant type encoding
@@ -78,9 +79,14 @@ message Tile {
                 // elevation_scaling, if present.
                 repeated sint32 elevation = 7 [ packed = true];
 
+                repeated uint64 spline_knots = 8 [ packed = true ];
+
+                optional uint32 spline_degree = 9;
+                
                 // A string as a unique identifier for the Feature. Use either
                 // id or string_id, but not both. See spec section 4.2.
                 optional string string_id = 10;
+                
         }
 
         // Layers are described in section 4.1 of the specification
