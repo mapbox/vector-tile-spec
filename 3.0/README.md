@@ -238,7 +238,9 @@ The command sequence in the `geometry` field for the control points in a spline 
 
 If the command sequence for a `SPLINE` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single b-spline; otherwise the geometry MUST be interpreted as a multi b-spline geometry, wherein each `MoveTo` signals the beginning of a new b-spline.
 
-Each b-spline defined in the `geometry` field MUST have an array of knot values in the `spline_knots` field. Each array of knot values for a b-spline MUST contain exactly the number of knot values as defined by the following formula: `number_of_knots = number_of_control_points + degree + 1`. Knot values are encoded in the `spline_knots` field using delta-encoded-list complex value type as defined in 4.4.2.2 below. There will be delta-encoded-list for each b-spline.
+The `spline_knots` field MUST contain a sequence of complex values, each of which MUST be of the delta-encoded-list type, as defined in section 4.4.2.2 below. The number of such sequences MUST be the same as the number of b-splines specified in the `geometry`.
+
+Each b-spline defined in the `geometry` field corresponds in sequence to one list of knot values in the `spline_knots` field. Each list of knot values for a b-spline MUST contain exactly the number of knot values defined by the following formula: `number_of_knots = number_of_control_points + degree + 1`.
 
 #### 4.3.6. Example Geometry Encodings
 
