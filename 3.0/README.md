@@ -474,7 +474,7 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
                  |     |   each pair is an index into layer keys
                  |     |   followed by a complex_value for the value
     delta-       | 10  | parameter is the number of items N in the list:
-      encoded    |     |   one uint64 is an index into the Layer's elevation_scaling
+      encoded    |     |   one uint64 is an index into the Layer's attribute_scalings
       list       |     |   followed by N uint64 nullable deltas for the list items
 
 Note that the complex values that follow a list or map may themselves contain lists or maps.
