@@ -467,7 +467,7 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
     sint         |  4  | index into layer int_values (values are zigzag encoded)
     inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
     inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
-    bool/null    |  7  | value of 0 = false, 1 = true, 2 = null
+    bool/null    |  7  | value of 0 = null, 1 = false, 2 = true
     list         |  8  | value is the number of list items to follow:
                  |     |   each item in the list is a complex value
     map          |  9  | value is the number of key-value pairs to follow:
