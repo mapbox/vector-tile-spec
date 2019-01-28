@@ -4,145 +4,141 @@ option optimize_for = LITE_RUNTIME;
 
 message Tile {
 
-        // GeomType is described in section 4.3.4 of the specification
-        enum GeomType {
-             UNKNOWN = 0;
-             POINT = 1;
-             LINESTRING = 2;
-             POLYGON = 3;
-             SPLINE = 4;    // like a LineString, but a spline
-        }
+    // GeomType is described in section 4.3.5 of the specification
+    enum GeomType {
+        UNKNOWN = 0;
+        POINT = 1;
+        LINESTRING = 2;
+        POLYGON = 3;
+        SPLINE = 4;
+    }
 
-        // Variant type encoding
-        // The use of values is described in section 4.4.1 of the specification
-        // Deprecated in version 3.
-        message Value {
-                // Exactly one of these values must be present in a valid message
-                optional string string_value = 1;
-                optional float float_value = 2;
-                optional double double_value = 3;
-                optional int64 int_value = 4;
-                optional uint64 uint_value = 5;
-                optional sint64 sint_value = 6;
-                optional bool bool_value = 7;
+    // Variant type encoding
+    // The use of values is described in section 4.4.1 of the specification
+    message Value {
+        // Exactly one of these values must be present in a valid message
+        optional string string_value = 1;
+        optional float float_value = 2;
+        optional double double_value = 3;
+        optional int64 int_value = 4;
+        optional uint64 uint_value = 5;
+        optional sint64 sint_value = 6;
+        optional bool bool_value = 7;
 
-                extensions 8 to max;
-        }
+        extensions 8 to max;
+    }
 
-        message Scaling {
-                // Formula for values in dimension:
-                // value = base + multiplier * (delta_encoded_value + offset)
+    message Scaling {
+        // Formula for values in dimension:
+        // value = base + multiplier * (delta_encoded_value + offset)
 
-                // Offset for deltas in this specific tile.
-                // If not set, offset = 0
-                optional sint64 offset = 1;
+        // Offset for deltas in this specific tile.
+        // If not set, offset = 0
+        optional sint64 offset = 1;
 
-                // If not set, multiplier = 1.0
-                optional double multiplier = 2;
+        // If not set, multiplier = 1.0
+        optional double multiplier = 2;
 
-                // If not set, base = 0.0
-                optional double base = 3;
-        }
+        // If not set, base = 0.0
+        optional double base = 3;
+    }
 
-        // Features are described in section 4.2 of the specification
-        message Feature {
-                optional uint64 id = 1 [ default = 0 ];
+    // Features are described in section 4.2 of the specification
+    message Feature {
+        // An integer as a unique identifier for the Feature. Use either
+        // id or string_id, but not both. See spec section 4.2.1.
+        optional uint64 id = 1 [ default = 0 ];
 
-                // Tags of this feature are encoded as repeated pairs of
-                // integers.
-                // A detailed description of tags is located in sections
-                // 4.2 and 4.4 of the specification
-                // Deprecated in version 3. Use attributes instead.
-                repeated uint32 tags = 2 [ packed = true ];
+        // Tags of this feature are encoded as repeated pairs of
+        // integers.
+        // A detailed description of tags is located in sections
+        // 4.2 and 4.4 of the specification
+        repeated uint32 tags = 2 [ packed = true ];
 
-                // The type of geometry stored in this feature.
-                optional GeomType type = 3 [ default = UNKNOWN ];
+        // The type of geometry stored in this feature.
+        optional GeomType type = 3 [ default = UNKNOWN ];
 
-                // Contains a stream of commands and parameters (vertices).
-                // A detailed description on geometry encoding is located in
-                // section 4.3 of the specification.
-                repeated uint32 geometry = 4 [ packed = true ];
+        // Contains a stream of commands and parameters (vertices).
+        // A detailed description on geometry encoding is located in
+        // section 4.3 of the specification.
+        repeated uint32 geometry = 4 [ packed = true ];
 
-                // Attributes of this feature in a special inline encoding. See
-                // the spec section 4.4.2 for details.
-                repeated uint64 attributes = 5 [ packed = true ];
+        // Attributes of this feature in a special inline encoding. See
+        // the spec section 4.4.2 for details.
+        repeated uint64 attributes = 5 [ packed = true ];
 
-                // Attributes of this feature that are tied to its geometry.
-                // The value for each key-value pair must be a list type
-                // that contains one element per moveto, lineto, or closepath
-                // in the geometry.
-                repeated uint64 geometric_attributes = 6 [ packed = true ];
+        // Attributes of this feature that are tied to its geometry.
+        // The value for each key-value pair must be a list type
+        // that contains one element per vertex in the geometry.
+        repeated uint64 geometric_attributes = 6 [ packed = true ];
 
-                // Delta-encoded elevation for each moveto, lineto, or closepath
-                // in the geometry.
-                // These values are scaled and offset using the layer's
-                // elevation_scaling, if present.
-                repeated sint32 elevation = 7 [ packed = true];
+        // Delta-encoded elevation for each vertex in the geometry.
+        // These values are scaled and offset using the layer's
+        // elevation_scaling, if present.
+        repeated sint32 elevation = 7 [ packed = true];
 
-                repeated uint64 spline_knots = 8 [ packed = true ];
+        repeated uint64 spline_knots = 8 [ packed = true ];
 
-                optional uint32 spline_degree = 9;
-                
-                // A string as a unique identifier for the Feature. Use either
-                // id or string_id, but not both. See spec section 4.2.
-                optional string string_id = 10;
-                
-        }
+        optional uint32 spline_degree = 9;
 
-        // Layers are described in section 4.1 of the specification
-        message Layer {
-                // Any compliant implementation must first read the version
-                // number encoded in this message and choose the correct
-                // implementation for this version number before proceeding to
-                // decode other parts of this message.
-                required uint32 version = 15 [ default = 1 ];
+        // A string as a unique identifier for the Feature. Use either
+        // id or string_id, but not both. See spec section 4.2.1.
+        optional string string_id = 10;
+    }
 
-                required string name = 1;
+    // Layers are described in section 4.1 of the specification
+    message Layer {
+        // Any compliant implementation must first read the version
+        // number encoded in this message and choose the correct
+        // implementation for this version number before proceeding to
+        // decode other parts of this message.
+        required uint32 version = 15 [ default = 1 ];
 
-                // The actual features in this tile.
-                repeated Feature features = 2;
+        required string name = 1;
 
-                // Dictionary encoding for keys
-                repeated string keys = 3;
+        // The actual features in this tile.
+        repeated Feature features = 2;
 
-                // Dictionary encoding for values
-                // Deprecated in version 3.
-                repeated Value values = 4;
+        // Dictionary encoding for keys
+        repeated string keys = 3;
 
-                // Although this is an "optional" field it is required by the specification.
-                // See https://github.com/mapbox/vector-tile-spec/issues/47
-                optional uint32 extent = 5 [ default = 4096 ];
+        // Dictionary encoding for values
+        repeated Value values = 4;
 
-                // Table of values of type string. Used for Inline Attributes
-                // in version 3. See spec section 4.4.2 for details.
-                repeated string string_values = 6;
+        // Although this is an "optional" field it is required by the specification.
+        // See https://github.com/mapbox/vector-tile-spec/issues/47
+        optional uint32 extent = 5 [ default = 4096 ];
 
-                // Table of values of type float. Used for Inline Attributes
-                // in version 3. See spec section 4.4.2 for details.
-                repeated float float_values = 7 [ packed = true ];
+        // Table of values of type string. Used for Inline Attributes
+        // in version 3. See spec section 4.4.2 for details.
+        repeated string string_values = 6;
 
-                // Table of values of type double. Used for Inline Attributes
-                // in version 3. See spec section 4.4.2 for details.
-                repeated double double_values = 8 [ packed = true ];
+        // Table of values of type float. Used for Inline Attributes
+        // in version 3. See spec section 4.4.2 for details.
+        repeated float float_values = 7 [ packed = true ];
 
-                // Table of values of type integer. Used for Inline Attributes
-                // in version 3. See spec section 4.4.2 for details.
-                repeated fixed64 int_values = 9 [ packed = true ];
+        // Table of values of type double. Used for Inline Attributes
+        // in version 3. See spec section 4.4.2 for details.
+        repeated double double_values = 8 [ packed = true ];
 
-                optional Scaling elevation_scaling = 10;
+        // Table of values of type integer. Used for Inline Attributes
+        // in version 3. See spec section 4.4.2 for details.
+        repeated fixed64 int_values = 9 [ packed = true ];
 
-                // Individual feature attributes refer to these Scalings
-                // by their index within this sequence in the Layer.
-                repeated Scaling attribute_scalings = 11;
+        optional Scaling elevation_scaling = 10;
 
-                optional uint32 tile_x = 12;
-                optional uint32 tile_y = 13;
-                optional uint32 tile_zoom = 14;
+        // Individual feature attributes refer to these Scalings
+        // by their index within this sequence in the Layer.
+        repeated Scaling attribute_scalings = 11;
 
-                extensions 16 to max;
-        }
+        optional uint32 tile_x = 12;
+        optional uint32 tile_y = 13;
+        optional uint32 tile_zoom = 14;
 
-        repeated Layer layers = 3;
+        extensions 16 to max;
+    }
 
-        extensions 16 to 8191;
+    repeated Layer layers = 3;
+
+    extensions 16 to 8191;
 }
