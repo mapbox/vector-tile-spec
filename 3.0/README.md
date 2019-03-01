@@ -40,13 +40,13 @@ A Vector Tile SHOULD contain at least one layer. A layer SHOULD contain at least
 
 A layer MUST contain a `version` field with the major version number of the Vector Tile specification to which the layer adheres. For example, a layer adhering to version 3.0 of the specification contains a `version` field with the integer value `3`. The `version` field SHOULD be the first field within the layer. Decoders SHOULD parse the `version` first to ensure that they are capable of decoding each layer. When a Vector Tile consumer encounters a Vector Tile layer with an unknown version, it MAY make a best-effort attempt to interpret the layer, or it MAY skip the layer. In either case it SHOULD continue to process subsequent layers in the Vector Tile.
 
-A layer MUST contain a `name` field. A Vector Tile MUST NOT contain two or more layers whose `name` values are byte-for-byte identical. Prior to appending a layer to an existing Vector Tile, an encoder MUST check the existing `name` fields in order to prevent duplication.
+A layer MUST contain a non-empty `name` field. A Vector Tile MUST NOT contain two or more layers whose `name` values are byte-for-byte identical. Prior to appending a layer to an existing Vector Tile, an encoder MUST check the existing `name` fields in order to prevent duplication.
 
 A layer MUST contain an `extent` that describes the width and height of the tile in integer coordinates. The geometries within the Vector Tile MAY extend past the bounds of the tile's area as defined by the `extent`. Geometries that extend past the tile's area as defined by `extent` are often used as a buffer for rendering features that overlap multiple adjacent tiles.
 
 For example, if a tile has an `extent` of 4096, coordinate units within the tile refer to 1/4096th of its square dimensions. A coordinate of 0 is on the top or left edge of the tile, and a coordinate of 4096 is on the bottom or right edge. Coordinates from 1 through 4095 inclusive are fully within the extent of the tile, and coordinates less than 0 or greater than 4096 are fully outside the extent of the tile.  A point at `(1,10)` or `(4095,10)` is within the extent of the tile. A point at `(0,10)` or `(4096,10)` is on the edge of the extent. A point at `(-1,10)` or `(4097,10)` is outside the extent of the tile.
 
-A layer MAY contain information about its tile location in the `tile_x`, `tile_y`, and `tile_zoom` fields. If you have one of these fields you MUST have the other tile locations fields. These fields were introduced first in version 3.0 of the specification. If you create a new layer, it is recommended that you fill in these fields.
+A layer MAY contain information about its tile location in the `tile_x`, `tile_y`, and `tile_zoom` fields. If you have one of these fields you MUST have the other tile locations fields. These fields were introduced first in version 3.0 of the specification. If you create a new layer, it is recommended that you fill in these fields. `tile_zoom` MUST be between 0 and 31. `tile_x` and `tile_y` MUST be between 0 and `tile_zoom ^ 2 - 1`.
 
 Each feature in a layer (see below) may have one or more key-value pairs as its attribute data. Keys and some types of values refer back to dictionaries stored in the layer in the fields `keys`, `values`, `string_values`, `float_values`, `double_values`, and `int_values`. Which fields are used depends on the type of attribute encoding used. Please reference section 4.4 for all specific rules governing these fields.
 
@@ -234,7 +234,7 @@ Polygon geometries MUST NOT have any interior rings that intersect and interior 
 
 ##### 4.3.5.5. Spline Geometry Type
 
-The `SPLINE` geometry type encodes a curve geometry in the form of a b-spline or basis spline. Unlike other geometry types, `SPLINE` requires the use of multiple fields in a feature. A spline geometry MUST have control points in the `geometry` field and knots in the `spline_knots` field. A spline geometry MAY have a degree in the `spline_degree` field.
+The `SPLINE` geometry type encodes a curve geometry in the form of a b-spline or basis spline. Unlike other geometry types, `SPLINE` requires the use of multiple fields in a feature. A spline geometry MUST have control points in the `geometry` field and knots in the `spline_knots` field. A spline geometry MAY have a degree of 2 or 3 in the `spline_degree` field.
 
 If a `SPLINE` geometry does not provide a degree in the `spline_degree` field, the degree is considered to be 2.
 
@@ -460,24 +460,20 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
     uint64_t type = complex_value & 0x0F; // least significant 4 bits
     uint64_t parameter = complex_value >> 4;
 
-        Type     | Id  | Parameter
-    ---------------------------------
-    string       |  0  | index into layer string_values
-    float        |  1  | index into layer float_values
-    double       |  2  | index into layer double_values
-    uint         |  3  | index into layer int_values
-    sint         |  4  | index into layer int_values (values are zigzag encoded)
-    inline uint  |  5  | value of unsigned integer (values between 0 to 2^60-1)
-    inline sint  |  6  | value of zigzag-encoded integer (values between -2^59 to 2^59-1)
-    null/bool    |  7  | value of 0 = null, 1 = false, 2 = true
-    list         |  8  | value is the number of list items to follow:
-                 |     |   each item in the list is a complex value
-    map          |  9  | value is the number of key-value pairs to follow:
-                 |     |   each pair is an index into layer keys
-                 |     |   followed by a complex_value for the value
-    delta-       | 10  | parameter is the number of items N in the list:
-      encoded    |     |   one uint64 is an index into the Layer's attribute_scalings
-      list       |     |   followed by N uint64 nullable deltas for the list items
+
+| Type               |   Id | Parameter      |
+| :----------------- | ---: | :------------- |
+| string             |    0 | index into layer `string_values` |
+| float              |    1 | index into layer `float_values` |
+| double             |    2 | index into layer `double_values` |
+| uint               |    3 | index into layer `int_values` |
+| sint               |    4 | index into layer `int_values` (values are zigzag encoded) |
+| inline uint        |    5 | value of unsigned integer (values between 0 to 2^60-1) |
+| inline sint        |    6 | value of zigzag-encoded integer (values between -2^59 to 2^59-1) |
+| null/bool          |    7 | value of 0 = `null`, 1 = `false`, 2 = `true` |
+| list               |    8 | value is the number of list items to follow: each item in the list is a complex value |
+| map                |    9 | value is the number of key-value pairs to follow: each pair is an index into layer keys followed by a complex value for the value |
+| delta-encoded list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` uint64` nullable deltas for the list items |
 
 Note that the complex values that follow a list or map may themselves contain lists or maps.
 
