@@ -245,7 +245,7 @@ The command sequence in the `geometry` field for the control points in a spline 
 
 If the command sequence for a `SPLINE` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single b-spline; otherwise the geometry MUST be interpreted as a multi b-spline geometry, wherein each `MoveTo` signals the beginning of a new b-spline.
 
-The `spline_knots` field MUST contain a sequence of complex values, each of which MUST be of the delta-encoded-list type, as defined in section 4.4.2.2 below. The number of such complex values MUST be the same as the number of b-splines specified in the `geometry`.
+The `spline_knots` field MUST contain a sequence of structured values, each of which MUST be of the delta-encoded-list type, as defined in section 4.4.2.2 below. The number of such structured values MUST be the same as the number of b-splines specified in the `geometry`.
 
 Each b-spline defined in the `geometry` field corresponds in sequence to one list of knot values in the `spline_knots` field. Each list of knot values for a b-spline MUST contain exactly the number of knot values defined by the following formula: `number_of_knots = number_of_control_points + degree + 1`.
 
@@ -441,7 +441,7 @@ The keys for Legacy Attributes are stored in the Layer and follow the rules in s
 
 #### 4.4.2. Inline Attributes
 
-Feature attributes are encoded as a series of integers in the `attributes` and `geometric_attributes` fields of a feature. Integers come in tuples that are usually pairs (but see below for the cases where more than two integers are required). The first integer in each tuple represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with 0 or more integers that follow, depending upon the value's type) represents the value of the attribute, and is referred to as a "complex value". Each key index MUST be unique within each feature, such that no other attribute within the same feature has the same key index. The `attributes` and `geometric_attributes` fields of a feature MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
+Feature attributes are encoded as a series of integers in the `attributes` and `geometric_attributes` fields of a feature. Integers come in tuples that are usually pairs (but see below for the cases where more than two integers are required). The first integer in each tuple represents the zero-based index of the key in the `keys` set of the `layer` to which the feature belongs. The second integer (along with 0 or more integers that follow, depending upon the value's type) represents the value of the attribute, and is referred to as a "structured value". Each key index MUST be unique within each feature, such that no other attribute within the same feature has the same key index. The `attributes` and `geometric_attributes` fields of a feature MUST NOT contain a key index greater than or equal to the number of elements in the layer's `keys`.
 
 ##### 4.4.2.1. Attributes and geometric attributes
 
@@ -453,12 +453,12 @@ Feature attributes that describe additional characteristics of specific location
 
 Each key-value pair in the `geometric_attributes` MUST have a value whose type is `list` or `delta-encoded list`, and whose length is the total number of vertices in the `geometry`. Each element in the list is considered to be associated with the corresponding vertex in the `geometry`. Note that the `geometric_attributes` message *does* include data for `ClosePath` operations, unlike `elevation`, which does not.
 
-##### 4.4.2.2. Complex Value Encoding
+##### 4.4.2.2. Structured Value Encoding
 
-Each complex value begins with a 64-bit unsigned integer, which can be split into two parts: the lowest 4 bits are the type bits, and the remaining bits are the parameter bits. What is stored in the parameter bits is dependent on the contents of the type bits. For inline types, the parameter field simply contains a value. For reference types the parameter field is an index position into one of the layer's value fields.
+Each structured value begins with a 64-bit unsigned integer, which can be split into two parts: the lowest 4 bits are the type bits, and the remaining bits are the parameter bits. What is stored in the parameter bits is dependent on the contents of the type bits. For inline types, the parameter field simply contains a value. For reference types the parameter field is an index position into one of the layer's value fields.
 
-    uint64_t type = complex_value & 0x0F; // least significant 4 bits
-    uint64_t parameter = complex_value >> 4;
+    uint64_t type = structured_value & 0x0F; // least significant 4 bits
+    uint64_t parameter = structured_value >> 4;
 
 
 | Type               |   Id | Parameter      |
@@ -471,13 +471,13 @@ Each complex value begins with a 64-bit unsigned integer, which can be split int
 | inline uint        |    5 | value of unsigned integer (values between 0 to 2^60-1) |
 | inline sint        |    6 | value of zigzag-encoded integer (values between -2^59 to 2^59-1) |
 | null/bool          |    7 | value of 0 = `null`, 1 = `false`, 2 = `true` |
-| list               |    8 | value is the number of list items to follow: each item in the list is a complex value |
-| map                |    9 | value is the number of key-value pairs to follow: each pair is an index into layer keys followed by a complex value for the value |
+| list               |    8 | value is the number of list items to follow: each item in the list is a structured value |
+| map                |    9 | value is the number of key-value pairs to follow: each pair is an index into layer keys followed by a structured value for the value |
 | delta-encoded list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` uint64` nullable deltas for the list items |
 
-Note that the complex values that follow a list or map may themselves contain lists or maps.
+Note that the structured values that follow a list or map may themselves contain lists or maps.
 
-Value types 11 through 15 are reserved for future versions of this specification. Implementations MUST treat complex values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
+Value types 11 through 15 are reserved for future versions of this specification. Implementations MUST treat structured values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
 
 ##### 4.4.2.3. Inline Attribute Keys
 
