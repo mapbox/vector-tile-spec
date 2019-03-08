@@ -46,7 +46,7 @@ A layer MUST contain an `extent` that describes the width and height of the tile
 
 For example, if a tile has an `extent` of 4096, coordinate units within the tile refer to 1/4096th of its square dimensions. A coordinate of 0 is on the top or left edge of the tile, and a coordinate of 4096 is on the bottom or right edge. Coordinates from 1 through 4095 inclusive are fully within the extent of the tile, and coordinates less than 0 or greater than 4096 are fully outside the extent of the tile.  A point at `(1,10)` or `(4095,10)` is within the extent of the tile. A point at `(0,10)` or `(4096,10)` is on the edge of the extent. A point at `(-1,10)` or `(4097,10)` is outside the extent of the tile.
 
-A layer MAY contain information about its tile location in the `tile_x`, `tile_y`, and `tile_zoom` fields. If you have one of these fields you MUST have the other tile locations fields. These fields were introduced first in version 3.0 of the specification. If you create a new layer, it is recommended that you fill in these fields. `tile_zoom` MUST be between 0 and 31. `tile_x` and `tile_y` MUST be between 0 and `tile_zoom ^ 2 - 1`.
+A layer MAY contain information about its tile location in the `tile_x`, `tile_y`, and `tile_zoom` fields. If you have one of these fields you MUST have the other tile locations fields. These fields were introduced first in version 3.0 of the specification. If you create a new layer, it is recommended that you fill in these fields. `tile_zoom` MUST be between 0 and 31. `tile_x` and `tile_y` MUST be between 0 and `tile_zoom<sup>2</sup> - 1`.
 
 Each feature in a layer (see below) may have one or more key-value pairs as its attribute data. Keys and some types of values refer back to dictionaries stored in the layer in the fields `keys`, `values`, `string_values`, `float_values`, `double_values`, and `int_values`. Which fields are used depends on the type of attribute encoding used. Please reference section 4.4 for all specific rules governing these fields.
 
@@ -468,9 +468,9 @@ Each structured value begins with a 64-bit unsigned integer, which can be split 
 | double             |    2 | index into layer `double_values` |
 | uint               |    3 | index into layer `int_values` |
 | sint               |    4 | index into layer `int_values` (values are zigzag encoded) |
-| inline uint        |    5 | value of unsigned integer (values between 0 to 2^60-1) |
-| inline sint        |    6 | value of zigzag-encoded integer (values between -2^59 to 2^59-1) |
-| null/bool          |    7 | value of 0 = `null`, 1 = `false`, 2 = `true` |
+| inline uint        |    5 | value of unsigned integer (values between 0 to 2<sup>60</sup>-1) |
+| inline sint        |    6 | value of zigzag-encoded integer (values between -2<sup>59</sup> to 2<sup>59</sup>-1) |
+| null/bool          |    7 | value of 0 = `null`, 1 = `false`, 2 = `true`, other values are not allowed |
 | list               |    8 | value is the number of list items to follow: each item in the list is a structured value |
 | map                |    9 | value is the number of key-value pairs to follow: each pair is an index into layer keys followed by a structured value for the value |
 | delta-encoded list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` uint64` nullable deltas for the list items |
