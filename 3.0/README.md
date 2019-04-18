@@ -245,7 +245,7 @@ The command sequence in the `geometry` field for the control points in a spline 
 
 If the command sequence for a `SPLINE` geometry type includes only a single `MoveTo` command then the geometry MUST be interpreted as a single b-spline; otherwise the geometry MUST be interpreted as a multi b-spline geometry, wherein each `MoveTo` signals the beginning of a new b-spline.
 
-The `spline_knots` field MUST contain a sequence of structured values, each of which MUST be of the delta-encoded-list type, as defined in section 4.4.2.2 below. The number of such structured values MUST be the same as the number of b-splines specified in the `geometry`.
+The `spline_knots` field MUST contain a sequence of structured values, each of which MUST be of the number-list type, as defined in section 4.4.2.2 below. The number of such structured values MUST be the same as the number of b-splines specified in the `geometry`.
 
 Each b-spline defined in the `geometry` field corresponds in sequence to one list of knot values in the `spline_knots` field. Each list of knot values for a b-spline MUST contain exactly the number of knot values defined by the following formula: `number_of_knots = number_of_control_points + degree + 1`.
 
@@ -451,7 +451,7 @@ Feature attributes that describe the overall feature SHOULD be encoded in the `a
 
 Feature attributes that describe additional characteristics of specific locations along the feature's geometry SHOULD be encoded in the `geometric_attributes` field.
 
-Each key-value pair in the `geometric_attributes` MUST have a value whose type is `list` or `delta-encoded list`, and whose length is the total number of vertices in the `geometry`. Each element in the list is considered to be associated with the corresponding vertex in the `geometry`. Note that the `geometric_attributes` message *does* include data for `ClosePath` operations, unlike `elevation`, which does not.
+Each key-value pair in the `geometric_attributes` MUST have a value whose type is `list` or `number-list`, and whose length is the total number of vertices in the `geometry`. Each element in the list is considered to be associated with the corresponding vertex in the `geometry`. Note that the `geometric_attributes` message *does* include data for `ClosePath` operations, unlike `elevation`, which does not.
 
 ##### 4.4.2.2. Structured Value Encoding
 
@@ -461,19 +461,19 @@ Each structured value begins with a 64-bit unsigned integer, which can be split 
     uint64_t parameter = structured_value >> 4;
 
 
-| Type               |   Id | Parameter      |
-| :----------------- | ---: | :------------- |
-| string             |    0 | index into layer `string_values` |
-| float              |    1 | index into layer `float_values` |
-| double             |    2 | index into layer `double_values` |
-| uint               |    3 | index into layer `int_values` |
-| sint               |    4 | index into layer `int_values` (values are zigzag encoded) |
-| inline uint        |    5 | value of unsigned integer (values between 0 to 2<sup>60</sup>-1) |
-| inline sint        |    6 | value of zigzag-encoded integer (values between -2<sup>59</sup> to 2<sup>59</sup>-1) |
-| null/bool          |    7 | value of 0 = `null`, 1 = `false`, 2 = `true`, other values are not allowed |
-| list               |    8 | value is the number of list items to follow: each item in the list is a structured value |
-| map                |    9 | value is the number of key-value pairs to follow: each pair is an index into layer keys followed by a structured value for the value |
-| delta-encoded list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` uint64` nullable deltas for the list items |
+| Type        |   Id | Parameter      |
+| :-----------| ---: | :------------- |
+| string      |    0 | index into layer `string_values` |
+| float       |    1 | index into layer `float_values` |
+| double      |    2 | index into layer `double_values` |
+| uint        |    3 | index into layer `int_values` |
+| sint        |    4 | index into layer `int_values` (values are zigzag encoded) |
+| inline uint |    5 | value of unsigned integer (values between 0 to 2<sup>60</sup>-1) |
+| inline sint |    6 | value of zigzag-encoded integer (values between -2<sup>59</sup> to 2<sup>59</sup>-1) |
+| null/bool   |    7 | value of 0 = `null`, 1 = `false`, 2 = `true`, other values are not allowed |
+| list        |    8 | value is the number of list items to follow: each item in the list is a structured value |
+| map         |    9 | value is the number of key-value pairs to follow: each pair is an index into Layer keys followed by a structured value for the value |
+| number-list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` `uint64` nullable deltas for the list items |
 
 Note that the structured values that follow a list or map may themselves contain lists or maps.
 
@@ -485,13 +485,17 @@ The keys for Inline Attributes are stored in the Layer and follow the rules in s
 
 ##### 4.4.2.4. Nullable deltas
 
-A delta-encoded list encodes a list, each element of which is either a floating point number or null.
+A number-list encodes a list, each element of which is either a floating point number or `null`.
 
-Each encoded value in the list is either 0, indicating null, or a nonzero value that is offset and then unzigzagged to produce a signed integer delta:
+Each encoded value in the list is either 0, indicating `null`, or a nonzero value that is offset and then unzigzagged to produce a signed integer delta:
 
-    sint64 delta = decode_zigzag64(encoding - 1);
+    if (encoded_value == 0)
+    then:
+        value is null
+    else:
+        sint64 delta = decode_zigzag64(encoded_value - 1);
 
-In the case of a null, the current value does not change, and the next delta is relative to the previous non-null value. The initial condition to which the first delta is applied is a value of 0.
+In the case of a `null`, the current value does not change, and the next delta is relative to the previous non-null value. The initial condition to which the first delta is applied is a value of 0.
 
 As indicated above, just prior to the deltas themselves is a uint64 index into the layer's `attribute_scalings` list. Each non-null delta-encoded value is further scaled and offset by the specified Scaling to produce a final floating point value.
 
