@@ -1,5 +1,9 @@
 # Vector Tile Spec Changelog
 
+### 3.0
+
+Update to proto 3
+
 ### 2.1
 
 The 2.1 update of the specification is a correction to the wording in a few locations of the 2.0 specification. The wording of the specification is slightly changed in 2.1, but reflects important concepts that were improperly described by the 2.0 specification. 
