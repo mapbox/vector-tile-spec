@@ -75,7 +75,7 @@ message Tile {
         // Delta-encoded elevation for each vertex in the geometry.
         // These values are scaled and offset using the layer's
         // elevation_scaling, if present.
-        repeated sint32 elevations = 7 [ packed = true];
+        repeated sint64 elevations = 7 [ packed = true];
 
         repeated uint64 spline_knots = 8 [ packed = true ];
 
