@@ -135,6 +135,10 @@ message Tile {
         optional uint32 tile_y = 13;
         optional uint32 tile_zoom = 14;
 
+        // Table of values of type bytes. Used for Inline Attributes
+        // in version 3. See spec section 4.4.2 for details.
+        repeated bytes bytes_values = 15;
+
         extensions 16 to max;
     }
 
