@@ -474,10 +474,11 @@ Each structured value begins with a 64-bit unsigned integer, which can be split 
 | list        |    8 | value is the number of list items to follow: each item in the list is a structured value |
 | map         |    9 | value is the number of key-value pairs to follow: each pair is an index into Layer keys followed by a structured value for the value |
 | number-list |   10 | parameter is the number of items `N` in the list: one `uint64` is an index into the Layer's `attribute_scalings` followed by `N` `uint64` nullable deltas for the list items |
+| bytes       |   11 | index into layer `bytes_values` |
 
 Note that the structured values that follow a list or map may themselves contain lists or maps.
 
-Value types 11 through 15 are reserved for future versions of this specification. Implementations MUST treat structured values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
+Value types 12 through 15 are reserved for future versions of this specification. Implementations MUST treat structured values of these types as opaque values that consume only one integer of storage (i.e., are not followed by additional sub-attributes). In the future they may refer to additional inline types or additional reference types.
 
 ##### 4.4.2.3. Inline Attribute Keys
 
