@@ -9,7 +9,7 @@ The text of this specification is licensed under a
 However, the use of this spec in products and code is entirely free:
 there are no royalties, restrictions, or requirements.
 
-## [Implementations](https://github.com/mapbox/vector-tile-spec/wiki/Implementations)
+## [Implementations](https://github.com/mapbox/awesome-vector-tiles)
 
 ## Versioning
 
